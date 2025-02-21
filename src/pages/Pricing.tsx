@@ -59,7 +59,7 @@ const Pricing = () => {
                 <h3 className="text-xl font-semibold mb-2">Pro Plan</h3>
                 <p className="text-gray-600 mb-4">For Growing Businesses</p>
                 <div className="text-4xl font-bold mb-6">
-                  $29<span className="text-lg text-gray-500">/month</span>
+                  $5<span className="text-lg text-gray-500">/month per user</span>
                 </div>
                 <ul className="space-y-4 mb-8">
                   <li className="flex items-center">
