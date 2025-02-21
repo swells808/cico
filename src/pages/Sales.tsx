@@ -4,21 +4,14 @@ import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { Link } from "react-router-dom";
-import { Shield, CreditCard, Info } from "lucide-react";
+import { Shield, CreditCard, Plus, Minus } from "lucide-react";
 
 const Sales = () => {
   const [selectedPlan, setSelectedPlan] = useState<"personal" | "pro" | null>(null);
-  const [userCount, setUserCount] = useState(1);
+  const [userCount, setUserCount] = useState(2);
   const [promoCode, setPromoCode] = useState("");
   const { toast } = useToast();
 
@@ -42,6 +35,13 @@ const Sales = () => {
     toast({
       title: "Proceeding to checkout...",
       description: "This feature will be implemented with Stripe integration",
+    });
+  };
+
+  const adjustUserCount = (increment: boolean) => {
+    setUserCount(prev => {
+      const newValue = increment ? prev + 1 : prev - 1;
+      return Math.min(Math.max(1, newValue), 999);
     });
   };
 
@@ -69,15 +69,14 @@ const Sales = () => {
         <div className="grid md:grid-cols-2 gap-8 mb-12">
           {/* Personal Plan */}
           <div className={`bg-white p-6 rounded-xl shadow-md border-2 ${
-            selectedPlan === "personal" ? "border-[#008000]" : "border-transparent"
+            selectedPlan === "personal" ? "border-[#4BA0F4]" : "border-transparent"
           }`}>
             <h2 className="text-xl font-semibold mb-2">Personal Plan</h2>
             <p className="text-gray-600 mb-4">Best for individuals</p>
             <div className="text-3xl font-bold mb-6">${personalPrice}/month</div>
             <Button 
               onClick={() => setSelectedPlan("personal")}
-              variant={selectedPlan === "personal" ? "default" : "outline"}
-              className="w-full"
+              className="w-full bg-[#4BA0F4] hover:bg-[#4BA0F4]/90"
             >
               Select Personal Plan
             </Button>
@@ -91,53 +90,69 @@ const Sales = () => {
             <p className="text-gray-600 mb-4">Best for teams</p>
             <div className="mb-4">
               <Label htmlFor="userCount">Number of Users</Label>
-              <Select 
-                value={String(userCount)}
-                onValueChange={(value) => setUserCount(Number(value))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select number of users" />
-                </SelectTrigger>
-                <SelectContent>
-                  {[1, 2, 3, 4, 5, 10, 15, 20].map((num) => (
-                    <SelectItem key={num} value={String(num)}>
-                      {num} {num === 1 ? "user" : "users"}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="flex items-center gap-3 mt-2">
+                <Button 
+                  variant="outline" 
+                  size="icon"
+                  onClick={() => adjustUserCount(false)}
+                  disabled={userCount <= 1}
+                >
+                  <Minus className="h-4 w-4" />
+                </Button>
+                <Input
+                  id="userCount"
+                  type="number"
+                  value={userCount}
+                  onChange={(e) => {
+                    const value = parseInt(e.target.value);
+                    if (!isNaN(value) && value >= 1 && value <= 999) {
+                      setUserCount(value);
+                    }
+                  }}
+                  min="1"
+                  max="999"
+                  className="text-center w-24"
+                />
+                <Button 
+                  variant="outline" 
+                  size="icon"
+                  onClick={() => adjustUserCount(true)}
+                  disabled={userCount >= 999}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
             <div className="text-3xl font-bold mb-6">
               ${proPricePerUser * userCount}/month
             </div>
             <Button 
               onClick={() => setSelectedPlan("pro")}
-              variant={selectedPlan === "pro" ? "default" : "outline"}
-              className="w-full"
+              className="w-full bg-[#008000] hover:bg-[#008000]/90"
             >
               Select Pro Plan
             </Button>
           </div>
         </div>
 
+        {/* Promo Code Section */}
+        <div className="bg-white p-6 rounded-xl shadow-md mb-8">
+          <h3 className="text-lg font-semibold mb-4">Promotion Code</h3>
+          <div className="flex gap-4">
+            <Input
+              placeholder="Enter promo code"
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value)}
+              className="flex-1"
+            />
+            <Button onClick={handlePromoCode} variant="outline">
+              Apply Code
+            </Button>
+          </div>
+        </div>
+
         {selectedPlan && (
           <>
-            {/* Promo Code Section */}
-            <div className="bg-white p-6 rounded-xl shadow-md mb-8">
-              <h3 className="text-lg font-semibold mb-4">Promotion Code</h3>
-              <div className="flex gap-4">
-                <Input
-                  placeholder="Enter promo code (Optional)"
-                  value={promoCode}
-                  onChange={(e) => setPromoCode(e.target.value)}
-                  className="flex-1"
-                />
-                <Button onClick={handlePromoCode} variant="outline">
-                  Apply Code
-                </Button>
-              </div>
-            </div>
-
             {/* Plan Summary */}
             <div className="bg-white p-6 rounded-xl shadow-md mb-8">
               <h3 className="text-lg font-semibold mb-4">Plan Summary</h3>
