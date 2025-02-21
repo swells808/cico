@@ -1,6 +1,7 @@
 
 import React from "react";
 import { Logo } from "@/components/ui/Logo";
+import { Link } from "react-router-dom";
 
 export const Footer: React.FC = () => {
   return (
@@ -15,33 +16,31 @@ export const Footer: React.FC = () => {
           </div>
           <div className="flex gap-20 max-sm:gap-8 max-sm:flex-wrap">
             <div>
-              <h3 className="text-base font-semibold text-black mb-4">
-                Quick Links
-              </h3>
+              <h3 className="text-base font-semibold text-black mb-4">Quick Links</h3>
               <div className="flex flex-col gap-2">
-                <a href="#" className="text-sm text-gray-600 no-underline">
+                <Link to="/features" className="text-sm text-gray-600 no-underline hover:text-[#4BA0F4]">
                   Features
-                </a>
-                <a href="#" className="text-sm text-gray-600 no-underline">
+                </Link>
+                <Link to="/pricing" className="text-sm text-gray-600 no-underline hover:text-[#4BA0F4]">
                   Pricing
-                </a>
-                <a href="#" className="text-sm text-gray-600 no-underline">
-                  Support
-                </a>
+                </Link>
+                <Link to="/privacy" className="text-sm text-gray-600 no-underline hover:text-[#4BA0F4]">
+                  Privacy
+                </Link>
               </div>
             </div>
             <div>
               <h3 className="text-base font-semibold text-black mb-4">Company</h3>
               <div className="flex flex-col gap-2">
-                <a href="#" className="text-sm text-gray-600 no-underline">
+                <Link to="/about" className="text-sm text-gray-600 no-underline hover:text-[#4BA0F4]">
                   About
-                </a>
-                <a href="#" className="text-sm text-gray-600 no-underline">
+                </Link>
+                <Link to="/contact" className="text-sm text-gray-600 no-underline hover:text-[#4BA0F4]">
                   Contact
-                </a>
-                <a href="#" className="text-sm text-gray-600 no-underline">
+                </Link>
+                <Link to="/privacy" className="text-sm text-gray-600 no-underline hover:text-[#4BA0F4]">
                   Privacy
-                </a>
+                </Link>
               </div>
             </div>
             <div>
@@ -114,4 +113,3 @@ export const Footer: React.FC = () => {
     </footer>
   );
 };
-
