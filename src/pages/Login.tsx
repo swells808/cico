@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,11 +13,39 @@ import { useToast } from "@/components/ui/use-toast";
 
 const Login = () => {
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Add login logic here
+    setIsLoading(true);
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Login successful",
+        description: "Welcome back!",
+      });
+
+      // Redirect to the home page or intended destination
+      navigate("/");
+    } catch (error: any) {
+      toast({
+        title: "Login failed",
+        description: error.message || "An error occurred during login",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleForgotPassword = async (e: React.MouseEvent) => {
@@ -73,6 +101,7 @@ const Login = () => {
                     className="w-full"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    disabled={isLoading}
                   />
                 </div>
 
@@ -83,6 +112,9 @@ const Login = () => {
                     type="password"
                     placeholder="Enter your password"
                     className="w-full"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    disabled={isLoading}
                   />
                 </div>
 
@@ -91,6 +123,7 @@ const Login = () => {
                     onClick={handleForgotPassword}
                     className="text-sm text-[#4BA0F4] hover:underline"
                     type="button"
+                    disabled={isLoading}
                   >
                     Forgot Password?
                   </button>
@@ -99,9 +132,10 @@ const Login = () => {
                 <Button
                   type="submit"
                   className="w-full bg-[#008000] hover:bg-[#008000]/90"
+                  disabled={isLoading}
                 >
                   <LogIn className="w-4 h-4 mr-2" />
-                  Login
+                  {isLoading ? "Logging in..." : "Login"}
                 </Button>
               </form>
 
@@ -123,6 +157,7 @@ const Login = () => {
                   onClick={() => {
                     // Add Google login logic
                   }}
+                  disabled={isLoading}
                 >
                   <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                     <path
@@ -151,6 +186,7 @@ const Login = () => {
                   onClick={() => {
                     // Add Microsoft login logic
                   }}
+                  disabled={isLoading}
                 >
                   <svg className="w-5 h-5 mr-2" viewBox="0 0 23 23">
                     <path fill="#f3f3f3" d="M0 0h23v23H0z" />
