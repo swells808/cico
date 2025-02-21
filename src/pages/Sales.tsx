@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/button";
@@ -111,7 +110,7 @@ const Sales = () => {
                   }}
                   min="1"
                   max="999"
-                  className="text-center w-24"
+                  className="text-center w-24 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
                 <Button 
                   variant="outline" 
