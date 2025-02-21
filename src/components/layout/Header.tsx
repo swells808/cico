@@ -1,16 +1,18 @@
 
 import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { Logo } from "@/components/ui/Logo";
 
 export const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   const navLinks = [
-    { href: "#", text: "Home", isActive: true },
-    { href: "#", text: "Features", isActive: false },
-    { href: "#", text: "Pricing", isActive: false },
-    { href: "#", text: "About", isActive: false },
-    { href: "#", text: "Contact", isActive: false },
+    { href: "/", text: "Home" },
+    { href: "/features", text: "Features" },
+    { href: "#", text: "Pricing" },
+    { href: "#", text: "About" },
+    { href: "#", text: "Contact" },
   ];
 
   return (
@@ -20,19 +22,19 @@ export const Header: React.FC = () => {
 
         <nav className="flex gap-[30px] max-sm:hidden">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.text}
-              href={link.href}
+              to={link.href}
               className={`text-base no-underline ${
-                link.isActive ? "text-[#008000]" : "text-gray-700"
+                location.pathname === link.href ? "text-[#008000]" : "text-gray-700 hover:text-[#4BA0F4]"
               }`}
             >
               {link.text}
-            </a>
+            </Link>
           ))}
         </nav>
 
-        <div className="flex items-center gap-2 text-white text-base cursor-pointer bg-[#008000] px-4 py-[11px] rounded-lg max-sm:hidden">
+        <div className="flex items-center gap-2 text-white text-base cursor-pointer bg-[#4BA0F4] px-4 py-[11px] rounded-lg max-sm:hidden">
           <svg
             width="15"
             height="16"
@@ -63,22 +65,22 @@ export const Header: React.FC = () => {
           <i className="ti ti-menu-2" />
         </button>
 
-        {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="hidden max-sm:block fixed inset-0 top-[65px] bg-white z-50">
             <div className="flex flex-col p-4">
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.text}
-                  href={link.href}
+                  to={link.href}
                   className={`text-base no-underline py-3 border-b border-gray-100 ${
-                    link.isActive ? "text-[#008000]" : "text-gray-700"
+                    location.pathname === link.href ? "text-[#008000]" : "text-gray-700"
                   }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {link.text}
-                </a>
+                </Link>
               ))}
-              <div className="flex items-center gap-2 text-white text-base cursor-pointer bg-[#008000] px-4 py-[11px] rounded-lg mt-4">
+              <div className="flex items-center gap-2 text-white text-base cursor-pointer bg-[#4BA0F4] px-4 py-[11px] rounded-lg mt-4">
                 <svg
                   width="15"
                   height="16"
@@ -107,4 +109,3 @@ export const Header: React.FC = () => {
     </header>
   );
 };
-
