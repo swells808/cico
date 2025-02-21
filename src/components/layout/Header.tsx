@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Logo } from "@/components/ui/Logo";
+import { Menu } from "lucide-react";
 
 export const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -58,11 +59,11 @@ export const Header: React.FC = () => {
         </div>
 
         <button
-          className="hidden max-sm:block"
+          className="hidden max-sm:block text-gray-600"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           aria-label="Toggle mobile menu"
         >
-          <i className="ti ti-menu-2" />
+          <Menu className="w-6 h-6" />
         </button>
 
         {isMobileMenuOpen && (
