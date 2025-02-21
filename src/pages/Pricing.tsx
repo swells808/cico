@@ -10,15 +10,21 @@ const Pricing = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="pt-16">
-        <section className="bg-gradient-to-b from-gray-50 to-white py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <section className="bg-gradient-to-b from-gray-50 to-white py-20 relative">
+          <div className="absolute inset-0 overflow-hidden z-0">
+            <img 
+              src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d" 
+              alt="Business laptop workspace" 
+              className="w-full h-full object-cover opacity-10"
+            />
+          </div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
               Simple & Transparent Pricing<br />Start Your 30-Day Free Trial Today!
             </h1>
             <p className="text-xl text-gray-600 mb-8">
               No credit card required. Cancel anytime.
             </p>
-            <Button variant="primary">Start Free Trial</Button>
           </div>
         </section>
 
