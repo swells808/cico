@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Link } from "react-router-dom";
@@ -8,11 +8,47 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const { toast } = useToast();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Add login logic here
+  };
+
+  const handleForgotPassword = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!email) {
+      toast({
+        title: "Email Required",
+        description: "Please enter your email address first",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Password Reset Email Sent",
+        description: "Check your email for the password reset link",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to send reset password email",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -35,6 +71,8 @@ const Login = () => {
                     type="email"
                     placeholder="Enter your email"
                     className="w-full"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
 
@@ -49,12 +87,13 @@ const Login = () => {
                 </div>
 
                 <div className="flex justify-end">
-                  <Link
-                    to="/forgot-password"
+                  <button
+                    onClick={handleForgotPassword}
                     className="text-sm text-[#4BA0F4] hover:underline"
+                    type="button"
                   >
                     Forgot Password?
-                  </Link>
+                  </button>
                 </div>
 
                 <Button
