@@ -14,19 +14,24 @@ serve(async (req) => {
   }
 
   try {
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      throw new Error('No authorization header');
-    }
-
     // Handle GET request for initialization
     if (req.method === 'GET') {
+      const publishableKey = Deno.env.get('STRIPE_PUBLISHABLE_KEY');
+      if (!publishableKey) {
+        throw new Error('Stripe publishable key not configured');
+      }
+
       return new Response(
-        JSON.stringify({ initialized: true }),
+        JSON.stringify({ publishableKey }),
         {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         }
       );
+    }
+
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      throw new Error('No authorization header');
     }
 
     // Handle POST request for checkout session creation

@@ -10,7 +10,6 @@ import { Shield, CreditCard, Plus, Minus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { loadStripe } from "@stripe/stripe-js";
 
-// Move Stripe initialization inside the component
 const Sales = () => {
   const [stripePromise, setStripePromise] = useState(null);
   const [selectedPlan, setSelectedPlan] = useState<"personal" | "pro" | null>(null);
@@ -24,13 +23,18 @@ const Sales = () => {
     // Initialize Stripe only when the component mounts
     const initStripe = async () => {
       try {
+        // Get the publishable key from Supabase Edge Function
         const { data, error } = await supabase.functions.invoke('stripe', {
           method: 'GET'
         });
         
         if (error) throw error;
         
-        const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+        if (!data?.publishableKey) {
+          throw new Error('No Stripe publishable key returned');
+        }
+
+        const stripe = await loadStripe(data.publishableKey);
         if (!stripe) throw new Error('Failed to initialize Stripe');
         setStripePromise(stripe);
       } catch (error) {
