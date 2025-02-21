@@ -8,12 +8,6 @@ const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
   httpClient: Stripe.createFetchHttpClient(),
 });
 
-interface CreateCheckoutSessionBody {
-  priceId: string;
-  planType: 'personal' | 'pro';
-  userCount?: number;
-}
-
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -25,18 +19,25 @@ serve(async (req) => {
       throw new Error('No authorization header');
     }
 
-    const path = new URL(req.url).pathname;
-    console.log(`Processing ${req.method} request to ${path}`);
+    // Handle GET request for initialization
+    if (req.method === 'GET') {
+      return new Response(
+        JSON.stringify({ initialized: true }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
 
-    if (req.method === 'POST' && path === '/create-checkout-session') {
-      const { priceId, planType, userCount = 1 }: CreateCheckoutSessionBody = await req.json();
+    // Handle POST request for checkout session creation
+    if (req.method === 'POST') {
+      const { priceId, planType, userCount = 1 } = await req.json();
       console.log('Creating checkout session for:', { priceId, planType, userCount });
 
-      // Create or update the Stripe price based on the plan type and user count
       let finalPriceId = priceId;
       if (planType === 'pro') {
         const price = await stripe.prices.create({
-          unit_amount: 500 * userCount, // $5 per user
+          unit_amount: 500 * userCount,
           currency: 'usd',
           recurring: { interval: 'month' },
           product_data: {
@@ -66,17 +67,27 @@ serve(async (req) => {
         },
       });
 
-      return new Response(JSON.stringify({ sessionId: session.id }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return new Response(
+        JSON.stringify({ sessionId: session.id }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
     }
 
-    return new Response('Not Found', { status: 404 });
+    return new Response('Method not allowed', { 
+      status: 405,
+      headers: corsHeaders,
+    });
+
   } catch (error) {
     console.error('Error:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 400,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return new Response(
+      JSON.stringify({ error: error.message }),
+      {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    );
   }
 });

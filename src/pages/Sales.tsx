@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,15 +10,41 @@ import { Shield, CreditCard, Plus, Minus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { loadStripe } from "@stripe/stripe-js";
 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
-
+// Move Stripe initialization inside the component
 const Sales = () => {
+  const [stripePromise, setStripePromise] = useState(null);
   const [selectedPlan, setSelectedPlan] = useState<"personal" | "pro" | null>(null);
   const [userCount, setUserCount] = useState(2);
   const [promoCode, setPromoCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Initialize Stripe only when the component mounts
+    const initStripe = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('stripe', {
+          method: 'GET'
+        });
+        
+        if (error) throw error;
+        
+        const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+        if (!stripe) throw new Error('Failed to initialize Stripe');
+        setStripePromise(stripe);
+      } catch (error) {
+        console.error('Stripe initialization error:', error);
+        toast({
+          title: "Error",
+          description: "Failed to initialize payment system",
+          variant: "destructive",
+        });
+      }
+    };
+
+    initStripe();
+  }, [toast]);
 
   const personalPrice = 2;
   const proPricePerUser = 5;
@@ -51,6 +77,10 @@ const Sales = () => {
         return;
       }
 
+      if (!stripePromise) {
+        throw new Error('Payment system not initialized');
+      }
+
       const priceId = selectedPlan === 'personal' ? 'price_personal' : 'price_pro';
       
       const { data, error } = await supabase.functions.invoke('stripe', {
@@ -63,10 +93,7 @@ const Sales = () => {
 
       if (error) throw error;
 
-      const stripe = await stripePromise;
-      if (!stripe) throw new Error('Stripe failed to load');
-
-      const result = await stripe.redirectToCheckout({
+      const result = await stripePromise.redirectToCheckout({
         sessionId: data.sessionId,
       });
 
