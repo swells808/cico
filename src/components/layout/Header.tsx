@@ -13,7 +13,7 @@ export const Header: React.FC = () => {
     { href: "/features", text: "Features" },
     { href: "/pricing", text: "Pricing" },
     { href: "/about", text: "About" },
-    { href: "#", text: "Contact" },
+    { href: "/contact", text: "Contact" },
   ];
 
   return (
