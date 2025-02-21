@@ -18,14 +18,14 @@ export const Footer: React.FC = () => {
             <div>
               <h3 className="text-base font-semibold text-black mb-4">Quick Links</h3>
               <div className="flex flex-col gap-2">
+                <Link to="/" className="text-sm text-gray-600 no-underline hover:text-[#4BA0F4]">
+                  Home
+                </Link>
                 <Link to="/features" className="text-sm text-gray-600 no-underline hover:text-[#4BA0F4]">
                   Features
                 </Link>
                 <Link to="/pricing" className="text-sm text-gray-600 no-underline hover:text-[#4BA0F4]">
                   Pricing
-                </Link>
-                <Link to="/privacy" className="text-sm text-gray-600 no-underline hover:text-[#4BA0F4]">
-                  Privacy
                 </Link>
               </div>
             </div>
@@ -39,7 +39,7 @@ export const Footer: React.FC = () => {
                   Contact
                 </Link>
                 <Link to="/privacy" className="text-sm text-gray-600 no-underline hover:text-[#4BA0F4]">
-                  Privacy
+                  Privacy Policy
                 </Link>
               </div>
             </div>
