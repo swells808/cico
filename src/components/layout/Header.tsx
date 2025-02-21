@@ -6,11 +6,11 @@ export const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navLinks = [
-    { href: "#", text: "Home" },
-    { href: "#", text: "Features" },
-    { href: "#", text: "Pricing" },
-    { href: "#", text: "About" },
-    { href: "#", text: "Contact" },
+    { href: "#", text: "Home", isActive: true },
+    { href: "#", text: "Features", isActive: false },
+    { href: "#", text: "Pricing", isActive: false },
+    { href: "#", text: "About", isActive: false },
+    { href: "#", text: "Contact", isActive: false },
   ];
 
   return (
@@ -23,7 +23,9 @@ export const Header: React.FC = () => {
             <a
               key={link.text}
               href={link.href}
-              className="text-gray-700 text-base no-underline"
+              className={`text-base no-underline ${
+                link.isActive ? "text-[#008000]" : "text-gray-700"
+              }`}
             >
               {link.text}
             </a>
@@ -69,7 +71,9 @@ export const Header: React.FC = () => {
                 <a
                   key={link.text}
                   href={link.href}
-                  className="text-gray-700 text-base no-underline py-3 border-b border-gray-100"
+                  className={`text-base no-underline py-3 border-b border-gray-100 ${
+                    link.isActive ? "text-[#008000]" : "text-gray-700"
+                  }`}
                 >
                   {link.text}
                 </a>
