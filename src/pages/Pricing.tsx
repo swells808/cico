@@ -30,13 +30,9 @@ const Pricing = () => {
                 <h3 className="text-xl font-semibold mb-2">Personal Plan</h3>
                 <p className="text-gray-600 mb-4">For Solopreneurs</p>
                 <div className="text-4xl font-bold mb-6">
-                  $9<span className="text-lg text-gray-500">/month</span>
+                  $2<span className="text-lg text-gray-500">/month</span>
                 </div>
                 <ul className="space-y-4 mb-8">
-                  <li className="flex items-center">
-                    <Check className="text-[#008000] mr-2 h-5 w-5" />
-                    <span>Up to 5 employees</span>
-                  </li>
                   <li className="flex items-center">
                     <Check className="text-[#008000] mr-2 h-5 w-5" />
                     <span>Basic reporting</span>
@@ -50,7 +46,7 @@ const Pricing = () => {
                     <span>Location tracking</span>
                   </li>
                 </ul>
-                <Button variant="secondary" className="w-full bg-gray-100 text-gray-800 hover:bg-gray-200">
+                <Button variant="secondary" className="w-full bg-[#4BA0F4] text-white hover:bg-[#4BA0F4]/90">
                   Start Free Trial
                 </Button>
               </div>
@@ -68,6 +64,10 @@ const Pricing = () => {
                 <ul className="space-y-4 mb-8">
                   <li className="flex items-center">
                     <Check className="text-[#008000] mr-2 h-5 w-5" />
+                    <span>Everything included in Personal</span>
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="text-[#008000] mr-2 h-5 w-5" />
                     <span>Unlimited employees</span>
                   </li>
                   <li className="flex items-center">
@@ -76,14 +76,10 @@ const Pricing = () => {
                   </li>
                   <li className="flex items-center">
                     <Check className="text-[#008000] mr-2 h-5 w-5" />
-                    <span>API access</span>
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="text-[#008000] mr-2 h-5 w-5" />
-                    <span>Priority support</span>
+                    <span>Advanced external software integrations</span>
                   </li>
                 </ul>
-                <Button variant="primary" className="w-full bg-[#4BA0F4] hover:bg-[#4BA0F4]/90">
+                <Button variant="primary" className="w-full bg-[#008000] hover:bg-[#008000]/90">
                   Start Free Trial
                 </Button>
               </div>
