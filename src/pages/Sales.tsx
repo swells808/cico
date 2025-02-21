@@ -5,14 +5,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Shield, CreditCard, Plus, Minus } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 const Sales = () => {
   const [selectedPlan, setSelectedPlan] = useState<"personal" | "pro" | null>(null);
   const [userCount, setUserCount] = useState(2);
   const [promoCode, setPromoCode] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const personalPrice = 2;
   const proPricePerUser = 5;
@@ -26,15 +32,56 @@ const Sales = () => {
   const handlePromoCode = () => {
     toast({
       title: "Validating promo code...",
-      description: "This feature will be implemented with Stripe integration",
+      description: "This feature will be implemented later",
     });
   };
 
-  const handleCheckout = () => {
-    toast({
-      title: "Proceeding to checkout...",
-      description: "This feature will be implemented with Stripe integration",
-    });
+  const handleCheckout = async () => {
+    try {
+      setIsLoading(true);
+      
+      const session = await supabase.auth.getSession();
+      if (!session.data.session) {
+        toast({
+          title: "Authentication required",
+          description: "Please sign in to continue with your purchase",
+          variant: "destructive",
+        });
+        navigate("/login?redirect=/sales");
+        return;
+      }
+
+      const priceId = selectedPlan === 'personal' ? 'price_personal' : 'price_pro';
+      
+      const { data, error } = await supabase.functions.invoke('stripe', {
+        body: {
+          priceId,
+          planType: selectedPlan,
+          userCount: selectedPlan === 'pro' ? userCount : 1,
+        },
+      });
+
+      if (error) throw error;
+
+      const stripe = await stripePromise;
+      if (!stripe) throw new Error('Stripe failed to load');
+
+      const result = await stripe.redirectToCheckout({
+        sessionId: data.sessionId,
+      });
+
+      if (result.error) throw result.error;
+
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Checkout Error",
+        description: error.message || "Failed to initiate checkout",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const adjustUserCount = (increment: boolean) => {
@@ -182,10 +229,14 @@ const Sales = () => {
               </div>
             </div>
 
-            {/* Checkout Button */}
-            <Button onClick={handleCheckout} className="w-full h-12 text-lg mb-8">
+            {/* Update Checkout Button */}
+            <Button 
+              onClick={handleCheckout} 
+              className="w-full h-12 text-lg mb-8"
+              disabled={isLoading}
+            >
               <CreditCard className="w-5 h-5 mr-2" />
-              Start Free Trial & Subscribe
+              {isLoading ? "Processing..." : "Start Free Trial & Subscribe"}
             </Button>
 
             {/* Legal Section */}
