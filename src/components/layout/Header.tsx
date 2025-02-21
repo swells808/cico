@@ -34,10 +34,10 @@ export const Header: React.FC = () => {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2 text-white text-base cursor-pointer bg-[#4BA0F4] px-4 py-[11px] rounded-lg max-sm:hidden">
+        <div className="flex items-center gap-2 text-white text-sm cursor-pointer bg-[#008000] px-3 py-2 rounded-lg max-sm:hidden">
           <svg
-            width="15"
-            height="16"
+            width="12"
+            height="13"
             viewBox="0 0 15 16"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -80,10 +80,10 @@ export const Header: React.FC = () => {
                   {link.text}
                 </Link>
               ))}
-              <div className="flex items-center gap-2 text-white text-base cursor-pointer bg-[#4BA0F4] px-4 py-[11px] rounded-lg mt-4">
+              <div className="flex items-center gap-2 text-white text-sm cursor-pointer bg-[#008000] px-3 py-2 rounded-lg mt-4">
                 <svg
-                  width="15"
-                  height="16"
+                  width="12"
+                  height="13"
                   viewBox="0 0 15 16"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
