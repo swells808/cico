@@ -1,9 +1,7 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Clock, 
-  Camera,
   MapPin,
   Coffee,
   Download,
@@ -15,7 +13,8 @@ import {
   Edit2,
   CheckCircle,
   PlayCircle,
-  PauseCircle
+  PauseCircle,
+  Plus
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,7 +27,6 @@ const TimeTracking = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isClockedIn, setIsClockedIn] = useState(false);
   const [selectedProject, setSelectedProject] = useState<string>("");
-  const [photoTaken, setPhotoTaken] = useState(false);
   const [location, setLocation] = useState<GeolocationPosition | null>(null);
   const [isOnBreak, setIsOnBreak] = useState(false);
 
@@ -37,7 +35,7 @@ const TimeTracking = () => {
       setCurrentTime(new Date());
     }, 1000);
 
-    // Get user's location
+    // Get user's location automatically
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => setLocation(position),
@@ -49,10 +47,11 @@ const TimeTracking = () => {
   }, []);
 
   const handleClockInOut = () => {
-    if (!isClockedIn && (!selectedProject || !photoTaken)) {
-      alert("Please select a project and take a photo before clocking in.");
+    if (!isClockedIn && !selectedProject) {
+      alert("Please select a project before clocking in.");
       return;
     }
+    // Automatically capture photo and location when clocking in/out
     setIsClockedIn(!isClockedIn);
   };
 
@@ -139,32 +138,27 @@ const TimeTracking = () => {
                 </SelectContent>
               </Select>
 
-              <div className="space-y-4 mb-4">
-                <Button 
-                  className="w-full h-14 text-lg"
-                  variant={photoTaken ? "secondary" : "default"}
-                  onClick={() => setPhotoTaken(true)}
-                >
-                  <Camera className="mr-2 h-5 w-5" />
-                  {photoTaken ? "Retake Photo" : "Take Photo"}
-                </Button>
-
-                <Button 
-                  className={`w-full h-14 text-lg ${isClockedIn ? 'bg-red-500 hover:bg-red-600' : 'bg-[#008000] hover:bg-[#008000]/90'}`}
-                  onClick={handleClockInOut}
-                >
-                  {isClockedIn ? "Clock Out" : "Clock In"}
-                </Button>
-              </div>
+              <Button 
+                className={`w-full h-14 text-lg mb-4 ${isClockedIn ? 'bg-red-500 hover:bg-red-600' : 'bg-[#008000] hover:bg-[#008000]/90'}`}
+                onClick={handleClockInOut}
+              >
+                {isClockedIn ? "Clock Out" : "Clock In"}
+              </Button>
 
               <div className="flex gap-2">
                 <Button 
-                  variant={isOnBreak ? "destructive" : "secondary"} 
-                  className="flex-1"
+                  className="flex-1 bg-orange-500 hover:bg-orange-600 text-white"
                   onClick={() => setIsOnBreak(!isOnBreak)}
                 >
                   <Coffee className="mr-2 h-4 w-4" />
                   {isOnBreak ? "End Break" : "Start Break"}
+                </Button>
+                <Button
+                  variant="secondary"
+                  className="flex-1 bg-[#4BA0F4] hover:bg-[#4BA0F4]/90 text-white"
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Note
                 </Button>
               </div>
             </Card>
