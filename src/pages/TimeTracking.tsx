@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -21,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format, differenceInMinutes } from "date-fns";
+import { Logo } from "@/components/ui/Logo";
 
 const TimeTracking = () => {
   const navigate = useNavigate();
@@ -61,9 +63,7 @@ const TimeTracking = () => {
       <header className="fixed w-full bg-white border-b border-gray-100 shadow-sm z-50">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
-              <div className="text-xl font-bold text-[#008000]">CICO</div>
-            </div>
+            <Logo />
             <nav className="hidden md:flex space-x-8">
               <span className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Dashboard</span>
               <span className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Clock</span>
