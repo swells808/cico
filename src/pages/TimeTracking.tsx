@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
   Clock, 
   MapPin,
@@ -65,7 +65,7 @@ const TimeTracking = () => {
           <div className="flex items-center justify-between h-16">
             <Logo />
             <nav className="hidden md:flex space-x-8">
-              <span className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Dashboard</span>
+              <Link to="/dashboard" className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Dashboard</Link>
               <span className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Clock</span>
               <span className="text-[#008000] font-medium cursor-pointer">Time Tracking</span>
               <span className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Projects</span>
