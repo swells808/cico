@@ -85,11 +85,8 @@ const Sales = () => {
         throw new Error('Payment system not initialized');
       }
 
-      const priceId = selectedPlan === 'personal' ? 'price_personal' : 'price_pro';
-      
       const { data, error } = await supabase.functions.invoke('stripe', {
         body: {
-          priceId,
           planType: selectedPlan,
           userCount: selectedPlan === 'pro' ? userCount : 1,
         },

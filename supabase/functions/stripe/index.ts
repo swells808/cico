@@ -29,35 +29,36 @@ serve(async (req) => {
       );
     }
 
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      throw new Error('No authorization header');
-    }
-
     // Handle POST request for checkout session creation
     if (req.method === 'POST') {
-      const { priceId, planType, userCount = 1 } = await req.json();
-      console.log('Creating checkout session for:', { priceId, planType, userCount });
+      const { planType, userCount = 1 } = await req.json();
+      console.log('Creating checkout session for:', { planType, userCount });
 
-      let finalPriceId = priceId;
-      if (planType === 'pro') {
-        const price = await stripe.prices.create({
-          unit_amount: 500 * userCount,
-          currency: 'usd',
-          recurring: { interval: 'month' },
-          product_data: {
-            name: `Pro Plan (${userCount} users)`,
-          },
-        });
-        finalPriceId = price.id;
-      }
+      // Create or retrieve product
+      const productName = planType === 'personal' ? 'Personal Plan' : 'Pro Plan';
+      let product = await stripe.products.create({
+        name: productName,
+        description: planType === 'personal' 
+          ? 'Personal subscription plan' 
+          : `Pro subscription plan for ${userCount} users`,
+      });
 
+      // Create price based on plan type
+      const unitAmount = planType === 'personal' ? 200 : 500 * userCount; // $2 for personal, $5 per user for pro
+      const price = await stripe.prices.create({
+        product: product.id,
+        unit_amount: unitAmount, // Amount in cents
+        currency: 'usd',
+        recurring: { interval: 'month' },
+      });
+
+      // Create checkout session
       const session = await stripe.checkout.sessions.create({
         mode: 'subscription',
         payment_method_types: ['card'],
         line_items: [
           {
-            price: finalPriceId,
+            price: price.id,
             quantity: 1,
           },
         ],
