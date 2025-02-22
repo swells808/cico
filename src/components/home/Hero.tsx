@@ -1,8 +1,11 @@
 
 import React from "react";
 import { Button } from "@/components/ui/custom-button";
+import { useNavigate } from "react-router-dom";
 
 export const Hero: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <section className="bg-white mt-[65px] px-20 py-24 max-sm:p-4">
       <div className="max-w-screen-xl flex justify-between items-center mx-auto my-0 max-md:px-10 max-md:py-0 max-sm:flex-col max-sm:gap-12 max-sm:text-center">
@@ -15,8 +18,18 @@ export const Hero: React.FC = () => {
             for modern businesses.
           </p>
           <div className="flex gap-4 max-sm:flex-col max-sm:gap-4">
-            <Button variant="primary">Start Free Trial</Button>
-            <Button variant="secondary">Features</Button>
+            <Button 
+              variant="primary" 
+              onClick={() => navigate("/signup")}
+            >
+              Start Free Trial
+            </Button>
+            <Button 
+              variant="secondary" 
+              onClick={() => navigate("/features")}
+            >
+              Features
+            </Button>
           </div>
         </div>
         <div className="w-[640px] h-[640px] flex justify-center items-center shadow-[0_25px_50px_rgba(0,0,0,0.25)] rounded-lg max-md:w-[480px] max-md:h-[480px] max-sm:w-full max-sm:h-auto max-sm:p-8">
