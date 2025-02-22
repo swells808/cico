@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Clock, Folder, RotateCcw, User, Coffee, Sticky, ArrowRightFromBracket, House, BarChart3 } from "lucide-react";
+import { Clock, Folder, RotateCcw, User, Coffee, StickyNote, LogOut, Home, BarChart3 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -130,7 +130,7 @@ const Dashboard = () => {
                     Start Break
                   </Button>
                   <Button variant="secondary" className="flex-1">
-                    <Sticky className="mr-2 h-4 w-4" />
+                    <StickyNote className="mr-2 h-4 w-4" />
                     Add Note
                   </Button>
                 </div>
@@ -150,7 +150,7 @@ const Dashboard = () => {
 
                 <div className="space-y-4">
                   <div className="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg">
-                    <ArrowRightFromBracket className="text-[#4BA0F4] w-5 h-5" />
+                    <LogOut className="text-[#4BA0F4] w-5 h-5" />
                     <div className="flex-1">
                       <div className="flex justify-between">
                         <div>
@@ -186,12 +186,12 @@ const Dashboard = () => {
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center h-14">
             <div className="flex space-x-6">
-              <House className="text-gray-600 hover:text-[#008000] cursor-pointer w-5 h-5" />
+              <Home className="text-gray-600 hover:text-[#008000] cursor-pointer w-5 h-5" />
               <Clock className="text-gray-600 hover:text-[#008000] cursor-pointer w-5 h-5" />
               <Folder className="text-gray-600 hover:text-[#008000] cursor-pointer w-5 h-5" />
               <BarChart3 className="text-gray-600 hover:text-[#008000] cursor-pointer w-5 h-5" />
             </div>
-            <ArrowRightFromBracket className="text-gray-600 hover:text-[#008000] cursor-pointer w-5 h-5" />
+            <LogOut className="text-gray-600 hover:text-[#008000] cursor-pointer w-5 h-5" />
           </div>
         </div>
       </footer>
