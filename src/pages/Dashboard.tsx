@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Clock, Folder, RotateCcw, User, Coffee, StickyNote, LogOut, Home, BarChart3 } from "lucide-react";
@@ -124,13 +123,13 @@ const Dashboard = () => {
                   Clock Out
                 </Button>
 
-                <div className="flex space-x-4 mb-4">
-                  <Button variant="destructive" className="flex-1">
-                    <Coffee className="mr-2 h-4 w-4" />
+                <div className="flex gap-2 mb-4">
+                  <Button variant="destructive" size="sm" className="flex-1 h-9 text-xs">
+                    <Coffee className="mr-1 h-3 w-3" />
                     Start Break
                   </Button>
-                  <Button variant="secondary" className="flex-1">
-                    <StickyNote className="mr-2 h-4 w-4" />
+                  <Button variant="secondary" size="sm" className="flex-1 h-9 text-xs">
+                    <StickyNote className="mr-1 h-3 w-3" />
                     Add Note
                   </Button>
                 </div>
@@ -141,6 +140,7 @@ const Dashboard = () => {
               </Card>
             </div>
 
+            {/* Activity Feed */}
             <div className="md:col-span-2">
               <Card className="p-6">
                 <div className="flex justify-between items-center mb-6">
