@@ -34,7 +34,7 @@ const Dashboard = () => {
               <span className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Time Tracking</span>
               <span className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Projects</span>
               <span className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Reports</span>
-              <span className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Settings</span>
+              <span className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Users</span>
             </nav>
             <div className="flex items-center">
               <button className="flex items-center space-x-2">

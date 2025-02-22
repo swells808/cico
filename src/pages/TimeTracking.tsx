@@ -70,7 +70,7 @@ const TimeTracking = () => {
               <span className="text-[#008000] font-medium cursor-pointer">Time Tracking</span>
               <span className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Projects</span>
               <span className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Reports</span>
-              <span className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Settings</span>
+              <span className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Users</span>
             </nav>
             <div className="flex items-center gap-2">
               <Button variant="ghost" size="icon">
