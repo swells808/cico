@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   LogOut,
   ChevronDown,
-  Users,
+  Users as UsersIcon,
   Settings as SettingsIcon,
   Search,
   Plus,
@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
 
-const Users = () => {
+const UsersPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -106,7 +106,7 @@ const Users = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg">Active Users</CardTitle>
-                  <Users className="w-5 h-5 text-[#4BA0F4]" />
+                  <UsersIcon className="w-5 h-5 text-[#4BA0F4]" />
                 </div>
                 <p className="text-3xl font-bold mt-2">247</p>
                 <p className="text-sm text-gray-500">+12 this month</p>
@@ -233,4 +233,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default UsersPage;
