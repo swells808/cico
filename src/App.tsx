@@ -15,6 +15,7 @@ import Signup from "./pages/Signup";
 import Sales from "./pages/Sales";
 import Dashboard from "./pages/Dashboard";
 import TimeTracking from "./pages/TimeTracking";
+import Projects from "./pages/Projects";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +38,7 @@ const App = () => (
           <Route path="/sales" element={<Sales />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/time-tracking" element={<TimeTracking />} />
+          <Route path="/projects" element={<Projects />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
