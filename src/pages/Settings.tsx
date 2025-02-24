@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -69,9 +70,6 @@ const Settings = () => {
               <Link to="/dashboard" className="text-gray-600 hover:text-[#4BA0F4]">
                 Dashboard
               </Link>
-              <Link to="/clock" className="text-gray-600 hover:text-[#4BA0F4]">
-                Clock
-              </Link>
               <Link to="/time-tracking" className="text-gray-600 hover:text-[#4BA0F4]">
                 Time Tracking
               </Link>
@@ -83,6 +81,9 @@ const Settings = () => {
               </Link>
               <Link to="/users" className="text-gray-600 hover:text-[#4BA0F4]">
                 Users
+              </Link>
+              <Link to="/sales" className="text-gray-600 hover:text-[#4BA0F4]">
+                Sales
               </Link>
             </nav>
             <div className="relative">
