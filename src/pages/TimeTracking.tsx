@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import {
@@ -7,15 +6,14 @@ import {
   Coffee,
   Download,
   FileText,
-  Bell,
   LogOut,
   ChevronDown,
-  AlertTriangle,
   Edit2,
   CheckCircle,
   PlayCircle,
   PauseCircle,
-  Plus
+  Plus,
+  StickyNote
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -53,7 +51,6 @@ const TimeTracking = () => {
       alert("Please select a project before clocking in.");
       return;
     }
-    // Automatically capture photo and location when clocking in/out
     setIsClockedIn(!isClockedIn);
   };
 
@@ -73,9 +70,6 @@ const TimeTracking = () => {
               <span className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Users</span>
             </nav>
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon">
-                <Bell className="h-5 w-5" />
-              </Button>
               <div className="relative">
                 <Button variant="ghost" className="flex items-center gap-2">
                   <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" alt="Profile" className="w-8 h-8 rounded-full" />
@@ -155,9 +149,10 @@ const TimeTracking = () => {
                 </Button>
                 <Button
                   variant="secondary"
-                  className="flex-1 bg-[#4BA0F4] hover:bg-[#4BA0F4]/90 text-white"
+                  size="sm"
+                  className="flex-1 h-9 text-xs"
                 >
-                  <Plus className="mr-2 h-4 w-4" />
+                  <StickyNote className="mr-1 h-3 w-3" />
                   Add Note
                 </Button>
               </div>
