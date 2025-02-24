@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -81,9 +80,6 @@ const Settings = () => {
               </Link>
               <Link to="/users" className="text-gray-600 hover:text-[#4BA0F4]">
                 Users
-              </Link>
-              <Link to="/sales" className="text-gray-600 hover:text-[#4BA0F4]">
-                Sales
               </Link>
             </nav>
             <div className="relative">
