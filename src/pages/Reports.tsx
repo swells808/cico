@@ -1,6 +1,6 @@
 
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Download,
   Clock,
@@ -8,12 +8,34 @@ import {
   LineChart,
   ArrowUp,
   ChevronDown,
-  Calendar
+  Calendar,
+  Settings,
+  LogOut,
 } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { supabase } from "@/integrations/supabase/client";
 
 const Reports = () => {
+  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      navigate("/login");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
+
   return (
     <div className="bg-gray-50">
       {/* Header */}
@@ -37,19 +59,32 @@ const Reports = () => {
               <span className="text-[#4BA0F4]">
                 Reports
               </span>
-              <Link to="/settings" className="text-gray-600 hover:text-[#4BA0F4]">
-                Settings
+              <Link to="/users" className="text-gray-600 hover:text-[#4BA0F4]">
+                Users
               </Link>
             </nav>
             <div className="relative">
-              <button className="flex items-center space-x-2">
-                <img
-                  src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg"
-                  alt="Profile"
-                  className="w-8 h-8 rounded-full"
-                />
-                <ChevronDown className="w-4 h-4 text-gray-500" />
-              </button>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center space-x-2">
+                  <img
+                    src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg"
+                    alt="Profile"
+                    className="w-8 h-8 rounded-full"
+                  />
+                  <ChevronDown className="w-4 h-4 text-gray-500" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={() => navigate("/settings")} className="cursor-pointer">
+                    <Settings className="w-4 h-4 mr-2" />
+                    Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600">
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
