@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -54,7 +53,7 @@ const Settings = () => {
 
   const handlePinCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, ''); // Only allow digits
-    if (value.length <= 6) { // Limit to 6 digits
+    if (value.length <= 10) { // Updated to allow up to 10 digits
       setPinCode(value);
     }
   };
@@ -273,12 +272,12 @@ const Settings = () => {
                     value={pinCode}
                     onChange={handlePinCodeChange}
                     className="mt-1"
-                    placeholder="Enter PIN (4-6 digits)"
+                    placeholder="Enter PIN (4-10 digits)"
                     minLength={4}
-                    maxLength={6}
+                    maxLength={10}
                   />
                   <p className="text-sm text-gray-500 mt-1">
-                    PIN must be between 4 and 6 digits
+                    PIN must be between 4 and 10 digits
                   </p>
                 </div>
               </div>
