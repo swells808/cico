@@ -124,12 +124,12 @@ const Dashboard = () => {
                 </Button>
 
                 <div className="flex gap-2 mb-4">
-                  <Button variant="destructive" size="sm" className="flex-1 h-9 text-xs">
-                    <Coffee className="mr-1 h-3 w-3" />
+                  <Button variant="destructive" className="flex-1">
+                    <Coffee className="mr-2 h-4 w-4" />
                     Start Break
                   </Button>
-                  <Button variant="secondary" size="sm" className="flex-1 h-9 text-xs">
-                    <StickyNote className="mr-1 h-3 w-3" />
+                  <Button className="flex-1 bg-[#4BA0F4] hover:bg-[#4BA0F4]/90 text-white">
+                    <StickyNote className="mr-2 h-4 w-4" />
                     Add Note
                   </Button>
                 </div>
