@@ -13,7 +13,9 @@ import {
   CheckCircle,
   FileText,
   Download,
-  BarChart3
+  BarChart3,
+  HomeIcon, // Changed from Home to HomeIcon
+  LogOutIcon // Changed from LogOut to LogOutIcon
 } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/button";
@@ -242,13 +244,13 @@ const Projects = () => {
           <div className="flex justify-between items-center h-14">
             <div className="flex space-x-6">
               <Link to="/dashboard">
-                <Home className="text-gray-600 hover:text-[#008000] cursor-pointer w-5 h-5" />
+                <HomeIcon className="text-gray-600 hover:text-[#008000] cursor-pointer w-5 h-5" />
               </Link>
               <Clock className="text-gray-600 hover:text-[#008000] cursor-pointer w-5 h-5" />
               <FileText className="text-[#008000] w-5 h-5" />
               <BarChart3 className="text-gray-600 hover:text-[#008000] cursor-pointer w-5 h-5" />
             </div>
-            <LogOut className="text-gray-600 hover:text-[#008000] cursor-pointer w-5 h-5" />
+            <LogOutIcon className="text-gray-600 hover:text-[#008000] cursor-pointer w-5 h-5" />
           </div>
         </div>
       </footer>
