@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -28,7 +27,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
 
-const UsersPage = () => {
+const Users = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -49,24 +48,12 @@ const UsersPage = () => {
           <div className="flex items-center justify-between h-16">
             <Logo />
             <nav className="hidden md:flex space-x-8">
-              <Link to="/dashboard" className="text-gray-600 hover:text-[#4BA0F4]">
-                Dashboard
-              </Link>
-              <Link to="/clock" className="text-gray-600 hover:text-[#4BA0F4]">
-                Clock
-              </Link>
-              <Link to="/time-tracking" className="text-gray-600 hover:text-[#4BA0F4]">
-                Time Tracking
-              </Link>
-              <Link to="/projects" className="text-gray-600 hover:text-[#4BA0F4]">
-                Projects
-              </Link>
-              <Link to="/reports" className="text-gray-600 hover:text-[#4BA0F4]">
-                Reports
-              </Link>
-              <Link to="/users" className="text-[#4BA0F4]">
-                Users
-              </Link>
+              <Link to="/dashboard" className="text-gray-600 hover:text-[#4BA0F4]">Dashboard</Link>
+              <Link to="/timeclock" className="text-gray-600 hover:text-[#4BA0F4]">Clock</Link>
+              <Link to="/time-tracking" className="text-gray-600 hover:text-[#4BA0F4]">Time Tracking</Link>
+              <Link to="/projects" className="text-gray-600 hover:text-[#4BA0F4]">Projects</Link>
+              <Link to="/reports" className="text-gray-600 hover:text-[#4BA0F4]">Reports</Link>
+              <Link to="/users" className="text-[#4BA0F4]">Users</Link>
             </nav>
             <div className="relative">
               <DropdownMenu>
@@ -80,7 +67,7 @@ const UsersPage = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuItem onClick={() => navigate("/settings")} className="cursor-pointer">
-                    <SettingsIcon className="w-4 h-4 mr-2" />
+                    <Settings className="w-4 h-4 mr-2" />
                     Settings
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -233,4 +220,4 @@ const UsersPage = () => {
   );
 };
 
-export default UsersPage;
+export default Users;

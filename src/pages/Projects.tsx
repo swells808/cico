@@ -1,6 +1,6 @@
-
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { LogOut, Settings, ChevronDown } from "lucide-react";
 import {
   Search,
   Plus,
@@ -10,6 +10,14 @@ import {
 import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { supabase } from "@/integrations/supabase/client";
 
 // Mock data for demonstration
 const projects = [
@@ -28,6 +36,19 @@ const projects = [
 ];
 
 const Projects = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      navigate("/login");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
+
+  
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -36,33 +57,35 @@ const Projects = () => {
           <div className="flex items-center justify-between h-16">
             <Logo />
             <nav className="hidden md:flex space-x-8">
-              <Link to="/dashboard" className="text-gray-500 hover:text-gray-900">
-                <i className="fa-solid fa-gauge-high mr-2" />Dashboard
-              </Link>
-              <Link to="/clock" className="text-gray-500 hover:text-gray-900">
-                <i className="fa-regular fa-clock mr-2" />Clock
-              </Link>
-              <Link to="/time-tracking" className="text-gray-500 hover:text-gray-900">
-                <i className="fa-solid fa-chart-line mr-2" />Time Tracking
-              </Link>
-              <span className="text-[#4BA0F4]">
-                <i className="fa-solid fa-folder mr-2" />Projects
-              </span>
-              <Link to="/reports" className="text-gray-500 hover:text-gray-900">
-                <i className="fa-solid fa-file-lines mr-2" />Reports
-              </Link>
-              <Link to="/settings" className="text-gray-500 hover:text-gray-900">
-                <i className="fa-solid fa-gear mr-2" />Settings
-              </Link>
+              <Link to="/dashboard" className="text-gray-600 hover:text-[#4BA0F4]">Dashboard</Link>
+              <Link to="/timeclock" className="text-gray-600 hover:text-[#4BA0F4]">Clock</Link>
+              <Link to="/time-tracking" className="text-gray-600 hover:text-[#4BA0F4]">Time Tracking</Link>
+              <Link to="/projects" className="text-[#4BA0F4]">Projects</Link>
+              <Link to="/reports" className="text-gray-600 hover:text-[#4BA0F4]">Reports</Link>
+              <Link to="/users" className="text-gray-600 hover:text-[#4BA0F4]">Users</Link>
             </nav>
-            <div className="flex items-center">
-              <button className="relative">
-                <img
-                  src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg"
-                  alt="Profile"
-                  className="w-8 h-8 rounded-full"
-                />
-              </button>
+            <div className="relative">
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center space-x-2">
+                  <img
+                    src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg"
+                    alt="Profile"
+                    className="w-8 h-8 rounded-full"
+                  />
+                  <ChevronDown className="w-4 h-4 text-gray-500" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={() => navigate("/settings")} className="cursor-pointer">
+                    <Settings className="w-4 h-4 mr-2" />
+                    Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600">
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>

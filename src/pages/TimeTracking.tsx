@@ -1,26 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import {
-  Clock, 
-  MapPin,
-  Coffee,
-  Download,
-  FileText,
-  LogOut,
-  ChevronDown,
-  Edit2,
-  CheckCircle,
-  PlayCircle,
-  PauseCircle,
-  Plus,
-  StickyNote
-} from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Play, Square, Coffee, X, Clock, MapPin, Download, FileText, Edit2, CheckCircle, PlayCircle, PauseCircle, StickyNote, LogOut, Settings, ChevronDown } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format, differenceInMinutes } from "date-fns";
 import { Logo } from "@/components/ui/Logo";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { supabase } from "@/integrations/supabase/client";
 
 const TimeTracking = () => {
   const navigate = useNavigate();
@@ -29,6 +23,15 @@ const TimeTracking = () => {
   const [selectedProject, setSelectedProject] = useState<string>("");
   const [location, setLocation] = useState<GeolocationPosition | null>(null);
   const [isOnBreak, setIsOnBreak] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      navigate("/login");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -62,20 +65,35 @@ const TimeTracking = () => {
           <div className="flex items-center justify-between h-16">
             <Logo />
             <nav className="hidden md:flex space-x-8">
-              <Link to="/dashboard" className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Dashboard</Link>
-              <span className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Clock</span>
-              <span className="text-[#008000] font-medium cursor-pointer">Time Tracking</span>
-              <span className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Projects</span>
-              <span className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Reports</span>
-              <span className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Users</span>
+              <Link to="/dashboard" className="text-gray-600 hover:text-[#4BA0F4]">Dashboard</Link>
+              <Link to="/timeclock" className="text-gray-600 hover:text-[#4BA0F4]">Clock</Link>
+              <Link to="/time-tracking" className="text-[#4BA0F4]">Time Tracking</Link>
+              <Link to="/projects" className="text-gray-600 hover:text-[#4BA0F4]">Projects</Link>
+              <Link to="/reports" className="text-gray-600 hover:text-[#4BA0F4]">Reports</Link>
+              <Link to="/users" className="text-gray-600 hover:text-[#4BA0F4]">Users</Link>
             </nav>
-            <div className="flex items-center gap-2">
-              <div className="relative">
-                <Button variant="ghost" className="flex items-center gap-2">
-                  <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" alt="Profile" className="w-8 h-8 rounded-full" />
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
-              </div>
+            <div className="relative">
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center space-x-2">
+                  <img
+                    src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg"
+                    alt="Profile"
+                    className="w-8 h-8 rounded-full"
+                  />
+                  <ChevronDown className="w-4 h-4 text-gray-500" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={() => navigate("/settings")} className="cursor-pointer">
+                    <Settings className="w-4 h-4 mr-2" />
+                    Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600">
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
