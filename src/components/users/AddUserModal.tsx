@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -42,29 +43,19 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ onSuccess }) => {
     setIsLoading(true);
 
     try {
-      // Create auth user with email and password
-      const { data: authData, error: authError } = await supabase.auth.signUp({
+      // Create auth user with admin API
+      const { data: { user: authUser }, error: authError } = await supabase.auth.admin.createUser({
         email: formData.email,
         password: formData.password,
+        email_confirm: true
       });
 
-      if (authError) {
-        // Check for rate limiting error
-        if (authError.message.includes('security purposes') || authError.status === 429) {
-          toast({
-            title: "Rate Limit Exceeded",
-            description: "Please wait a moment before trying again.",
-            variant: "destructive",
-          });
-          return;
-        }
-        throw authError;
-      }
+      if (authError) throw authError;
 
-      if (authData.user) {
+      if (authUser) {
         // Create profile
         const { error: profileError } = await supabase.from('profiles').insert({
-          id: authData.user.id,
+          id: authUser.id,
           first_name: formData.firstName,
           last_name: formData.lastName,
           email: formData.email,
@@ -81,7 +72,7 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ onSuccess }) => {
 
         // Assign role
         const { error: roleError } = await supabase.from('user_roles').insert({
-          user_id: authData.user.id,
+          user_id: authUser.id,
           role: formData.role
         });
 
@@ -105,7 +96,7 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ onSuccess }) => {
           addressState: "",
           addressZip: "",
           addressCountry: "",
-          role: "employee" as "admin" | "manager" | "employee"
+          role: "employee"
         });
         onSuccess?.();
       }
