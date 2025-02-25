@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -52,8 +51,9 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ onSuccess }) => {
       if (authError) throw authError;
 
       if (authData.user) {
-        // Create profile
-        const { error: profileError } = await supabase.from('profiles').update({
+        // Create profile - note we're using insert here instead of update
+        const { error: profileError } = await supabase.from('profiles').insert({
+          id: authData.user.id,
           first_name: formData.firstName,
           last_name: formData.lastName,
           email: formData.email,
@@ -64,7 +64,7 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ onSuccess }) => {
           address_state: formData.addressState,
           address_zip: formData.addressZip,
           address_country: formData.addressCountry
-        }).eq('id', authData.user.id);
+        });
 
         if (profileError) throw profileError;
 
@@ -87,7 +87,7 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ onSuccess }) => {
       console.error('Error creating user:', error);
       toast({
         title: "Error",
-        description: "Failed to create user. Please try again.",
+        description: `Failed to create user: ${error.message}`,
         variant: "destructive",
       });
     } finally {
