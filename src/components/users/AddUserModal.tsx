@@ -43,63 +43,81 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ onSuccess }) => {
     setIsLoading(true);
 
     try {
-      // Create auth user
-      const { data, error: authError } = await supabaseAdmin.auth.admin.createUser({
+      // First, create the user in auth.users
+      const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
         email: formData.email,
         password: formData.password,
         email_confirm: true,
+        user_metadata: {
+          first_name: formData.firstName,
+          last_name: formData.lastName
+        }
       });
 
-      if (authError) throw authError;
-
-      if (data.user) {
-        // Create profile
-        const { error: profileError } = await supabaseAdmin.from('profiles').insert({
-          id: data.user.id,
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          email: formData.email,
-          pin_code: formData.pin,
-          phone_number: formData.phone,
-          address_street: formData.addressStreet,
-          address_city: formData.addressCity,
-          address_state: formData.addressState,
-          address_zip: formData.addressZip,
-          address_country: formData.addressCountry
-        });
-
-        if (profileError) throw profileError;
-
-        // Assign role
-        const { error: roleError } = await supabaseAdmin.from('user_roles').insert({
-          user_id: data.user.id,
-          role: formData.role
-        });
-
-        if (roleError) throw roleError;
-
-        toast({
-          title: "Success",
-          description: "User has been created successfully.",
-        });
-        setOpen(false);
-        // Reset form data
-        setFormData({
-          firstName: "",
-          lastName: "",
-          email: "",
-          pin: "",
-          password: "",
-          phone: "",
-          addressStreet: "",
-          addressCity: "",
-          addressState: "",
-          addressZip: "",
-          addressCountry: "",
-          role: "employee"
-        });
-        onSuccess?.();
+      if (authError) {
+        console.error('Auth Error:', authError);
+        throw authError;
       }
+
+      if (!authData.user) {
+        throw new Error('No user data returned');
+      }
+
+      console.log('User created:', authData.user);
+
+      // Then create the profile
+      const { error: profileError } = await supabaseAdmin.from('profiles').insert({
+        id: authData.user.id,
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        email: formData.email,
+        pin_code: formData.pin,
+        phone_number: formData.phone,
+        address_street: formData.addressStreet,
+        address_city: formData.addressCity,
+        address_state: formData.addressState,
+        address_zip: formData.addressZip,
+        address_country: formData.addressCountry
+      });
+
+      if (profileError) {
+        console.error('Profile Error:', profileError);
+        throw profileError;
+      }
+
+      // Finally assign the role
+      const { error: roleError } = await supabaseAdmin.from('user_roles').insert({
+        user_id: authData.user.id,
+        role: formData.role
+      });
+
+      if (roleError) {
+        console.error('Role Error:', roleError);
+        throw roleError;
+      }
+
+      toast({
+        title: "Success",
+        description: "User has been created successfully.",
+      });
+      
+      setOpen(false);
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        pin: "",
+        password: "",
+        phone: "",
+        addressStreet: "",
+        addressCity: "",
+        addressState: "",
+        addressZip: "",
+        addressCountry: "",
+        role: "employee"
+      });
+      
+      onSuccess?.();
     } catch (error) {
       console.error('Error creating user:', error);
       toast({
