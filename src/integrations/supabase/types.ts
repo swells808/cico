@@ -24,6 +24,7 @@ export type Database = {
           last_name: string | null
           phone_number: string | null
           pin_code: string | null
+          role: string | null
           updated_at: string
         }
         Insert: {
@@ -40,6 +41,7 @@ export type Database = {
           last_name?: string | null
           phone_number?: string | null
           pin_code?: string | null
+          role?: string | null
           updated_at?: string
         }
         Update: {
@@ -56,6 +58,7 @@ export type Database = {
           last_name?: string | null
           phone_number?: string | null
           pin_code?: string | null
+          role?: string | null
           updated_at?: string
         }
         Relationships: []
