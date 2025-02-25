@@ -27,6 +27,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
+import { AddUserModal } from "@/components/users/AddUserModal";
 
 const Users = () => {
   const navigate = useNavigate();
@@ -38,6 +39,11 @@ const Users = () => {
     } catch (error) {
       console.error("Error logging out:", error);
     }
+  };
+
+  const refreshUsers = () => {
+    // TODO: Implement refresh logic when we add the users list
+    console.log("Refreshing users list...");
   };
 
   return (
@@ -141,10 +147,7 @@ const Users = () => {
                     <option>Employee</option>
                   </select>
                 </div>
-                <Button className="bg-[#4BA0F4] hover:bg-[#4BA0F4]/90">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add New User
-                </Button>
+                <AddUserModal onSuccess={refreshUsers} />
               </div>
             </CardHeader>
             <CardContent>
@@ -200,15 +203,9 @@ const Users = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
             <div className="flex space-x-4 text-sm text-gray-500">
-              <Link to="/support" className="hover:text-gray-700">
-                Support
-              </Link>
-              <Link to="/privacy" className="hover:text-gray-700">
-                Privacy Policy
-              </Link>
-              <Link to="/terms" className="hover:text-gray-700">
-                Terms
-              </Link>
+              <Link to="/support" className="hover:text-gray-700">Support</Link>
+              <Link to="/privacy" className="hover:text-gray-700">Privacy Policy</Link>
+              <Link to="/terms" className="hover:text-gray-700">Terms</Link>
             </div>
             <div className="text-sm text-gray-500">
               © 2025 CICO Timeclock
