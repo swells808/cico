@@ -11,13 +11,15 @@ export const supabaseAdmin = createClient<Database>(
   {
     auth: {
       autoRefreshToken: false,
-      persistSession: false
-    },
-    global: {
-      headers: {
-        'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
-        'apikey': SUPABASE_SERVICE_ROLE_KEY
-      }
+      persistSession: false,
+      detectSessionInUrl: false
     }
   }
 );
+
+// Set default headers for all requests
+supabaseAdmin.rest.headers = {
+  'apikey': SUPABASE_SERVICE_ROLE_KEY,
+  'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+  'X-Client-Info': 'supabase-js/2.1.0'
+};
