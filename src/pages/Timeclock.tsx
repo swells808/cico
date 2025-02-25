@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Play, Stop, Coffee, X, Clock } from "lucide-react";
+import { Play, Square, Coffee, X, Clock } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -131,7 +130,7 @@ const Timeclock = () => {
                 disabled={!isActionEnabled}
                 variant="destructive"
               >
-                <Stop className="w-4 h-4 mr-2" />
+                <Square className="w-4 h-4 mr-2" />
                 Clock Out
               </Button>
             </div>
