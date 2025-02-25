@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -14,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { supabaseAdmin } from "@/integrations/supabase/admin-client";
 
 interface AddUserModalProps {
   onSuccess?: () => void;
@@ -43,8 +43,8 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ onSuccess }) => {
     setIsLoading(true);
 
     try {
-      // Create auth user with admin API
-      const { data: { user: authUser }, error: authError } = await supabase.auth.admin.createUser({
+      // Create auth user with admin client
+      const { data: { user: authUser }, error: authError } = await supabaseAdmin.auth.admin.createUser({
         email: formData.email,
         password: formData.password,
         email_confirm: true
@@ -53,8 +53,8 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ onSuccess }) => {
       if (authError) throw authError;
 
       if (authUser) {
-        // Create profile
-        const { error: profileError } = await supabase.from('profiles').insert({
+        // Create profile using admin client
+        const { error: profileError } = await supabaseAdmin.from('profiles').insert({
           id: authUser.id,
           first_name: formData.firstName,
           last_name: formData.lastName,
@@ -70,8 +70,8 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ onSuccess }) => {
 
         if (profileError) throw profileError;
 
-        // Assign role
-        const { error: roleError } = await supabase.from('user_roles').insert({
+        // Assign role using admin client
+        const { error: roleError } = await supabaseAdmin.from('user_roles').insert({
           user_id: authUser.id,
           role: formData.role
         });
