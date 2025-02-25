@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Clock, Folder, RotateCcw, User, Coffee, StickyNote, LogOut, Home, BarChart3 } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Clock, Folder, RotateCcw, User, Coffee, StickyNote, LogOut } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -28,12 +29,12 @@ const Dashboard = () => {
           <div className="flex items-center justify-between h-16">
             <Logo />
             <nav className="hidden md:flex space-x-8">
-              <span className="text-[#008000] font-medium cursor-pointer">Dashboard</span>
-              <span className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Clock</span>
-              <span className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Time Tracking</span>
-              <span className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Projects</span>
-              <span className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Reports</span>
-              <span className="text-gray-600 hover:text-[#4BA0F4] cursor-pointer">Users</span>
+              <Link to="/dashboard" className="text-[#008000] font-medium">Dashboard</Link>
+              <Link to="/timeclock" className="text-gray-600 hover:text-[#4BA0F4]">Clock</Link>
+              <Link to="/time-tracking" className="text-gray-600 hover:text-[#4BA0F4]">Time Tracking</Link>
+              <Link to="/projects" className="text-gray-600 hover:text-[#4BA0F4]">Projects</Link>
+              <Link to="/reports" className="text-gray-600 hover:text-[#4BA0F4]">Reports</Link>
+              <Link to="/users" className="text-gray-600 hover:text-[#4BA0F4]">Users</Link>
             </nav>
             <div className="flex items-center">
               <button className="flex items-center space-x-2">
