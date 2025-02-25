@@ -19,6 +19,7 @@ import Projects from "./pages/Projects";
 import Reports from "./pages/Reports";
 import Users from "./pages/Users";
 import Settings from "./pages/Settings";
+import Timeclock from "./pages/Timeclock";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -45,6 +46,7 @@ const App = () => (
           <Route path="/reports" element={<Reports />} />
           <Route path="/users" element={<Users />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/timeclock" element={<Timeclock />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
