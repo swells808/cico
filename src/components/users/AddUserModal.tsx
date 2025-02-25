@@ -26,6 +26,7 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ onSuccess }) => {
   const [formData, setFormData] = React.useState({
     firstName: "",
     lastName: "",
+    email: "",
     pin: "",
     password: "",
     phone: "",
@@ -42,10 +43,9 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ onSuccess }) => {
     setIsLoading(true);
 
     try {
-      // Create auth user with email (using firstName.lastName) and password
-      const email = `${formData.firstName.toLowerCase()}.${formData.lastName.toLowerCase()}@company.com`;
+      // Create auth user with email and password
       const { data: authData, error: authError } = await supabase.auth.signUp({
-        email,
+        email: formData.email,
         password: formData.password,
       });
 
@@ -56,6 +56,7 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ onSuccess }) => {
         const { error: profileError } = await supabase.from('profiles').update({
           first_name: formData.firstName,
           last_name: formData.lastName,
+          email: formData.email,
           pin_code: formData.pin,
           phone_number: formData.phone,
           address_street: formData.addressStreet,
@@ -133,7 +134,9 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ onSuccess }) => {
               <Label htmlFor="pin">Default PIN</Label>
               <Input
                 id="pin"
-                type="number"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 value={formData.pin}
                 onChange={(e) => setFormData(prev => ({ ...prev, pin: e.target.value }))}
                 required
@@ -149,6 +152,17 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ onSuccess }) => {
                 required
               />
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="email">Email Address</Label>
+            <Input
+              id="email"
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+              required
+            />
           </div>
 
           <div className="space-y-2">
