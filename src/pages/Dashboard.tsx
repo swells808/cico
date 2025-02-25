@@ -182,17 +182,19 @@ const Dashboard = () => {
       </main>
 
       {/* Footer */}
-      <footer className="fixed bottom-0 w-full bg-white border-t border-gray-100">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center h-14">
-            <div className="flex space-x-6">
-              <Home className="text-gray-600 hover:text-[#008000] cursor-pointer w-5 h-5" />
-              <Clock className="text-gray-600 hover:text-[#008000] cursor-pointer w-5 h-5" />
-              <Folder className="text-gray-600 hover:text-[#008000] cursor-pointer w-5 h-5" />
-              <BarChart3 className="text-gray-600 hover:text-[#008000] cursor-pointer w-5 h-5" />
+      <footer className="fixed bottom-0 left-0 right-0 p-4">
+        <div className="max-w-md mx-auto">
+          <Card className="p-4">
+            <div className="flex space-x-4 text-sm text-gray-600">
+              <a href="#" className="hover:text-[#008000]">Support</a>
+              <a href="#" className="hover:text-[#008000]">Privacy Policy</a>
+              <a href="#" className="hover:text-[#008000]">Terms</a>
             </div>
-            <LogOut className="text-gray-600 hover:text-[#008000] cursor-pointer w-5 h-5" />
-          </div>
+            <Button variant="ghost" size="sm" className="text-gray-600 hover:text-[#008000]">
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout
+            </Button>
+          </Card>
         </div>
       </footer>
     </div>
