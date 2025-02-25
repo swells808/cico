@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   LogOut,
   ChevronDown,
   Users as UsersIcon,
-  Settings as SettingsIcon,
+  Settings2 as Settings,
   Search,
   Plus,
   MoreVertical
@@ -29,7 +30,6 @@ import { supabase } from "@/integrations/supabase/client";
 
 const Users = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
 
   const handleLogout = async () => {
     try {
