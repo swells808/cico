@@ -11,27 +11,48 @@ export type Database = {
     Tables: {
       profiles: {
         Row: {
+          address_city: string | null
+          address_country: string | null
+          address_state: string | null
+          address_street: string | null
+          address_zip: string | null
           avatar_url: string | null
           created_at: string
           first_name: string | null
           id: string
           last_name: string | null
+          phone_number: string | null
+          pin_code: string | null
           updated_at: string
         }
         Insert: {
+          address_city?: string | null
+          address_country?: string | null
+          address_state?: string | null
+          address_street?: string | null
+          address_zip?: string | null
           avatar_url?: string | null
           created_at?: string
           first_name?: string | null
           id: string
           last_name?: string | null
+          phone_number?: string | null
+          pin_code?: string | null
           updated_at?: string
         }
         Update: {
+          address_city?: string | null
+          address_country?: string | null
+          address_state?: string | null
+          address_street?: string | null
+          address_zip?: string | null
           avatar_url?: string | null
           created_at?: string
           first_name?: string | null
           id?: string
           last_name?: string | null
+          phone_number?: string | null
+          pin_code?: string | null
           updated_at?: string
         }
         Relationships: []
