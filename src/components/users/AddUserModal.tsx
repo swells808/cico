@@ -48,10 +48,21 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ onSuccess }) => {
         password: formData.password,
       });
 
-      if (authError) throw authError;
+      if (authError) {
+        // Check for rate limiting error
+        if (authError.message.includes('security purposes') || authError.status === 429) {
+          toast({
+            title: "Rate Limit Exceeded",
+            description: "Please wait a moment before trying again.",
+            variant: "destructive",
+          });
+          return;
+        }
+        throw authError;
+      }
 
       if (authData.user) {
-        // Create profile - note we're using insert here instead of update
+        // Create profile
         const { error: profileError } = await supabase.from('profiles').insert({
           id: authData.user.id,
           first_name: formData.firstName,
@@ -81,13 +92,28 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ onSuccess }) => {
           description: "User has been created successfully.",
         });
         setOpen(false);
+        // Reset form data
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          pin: "",
+          password: "",
+          phone: "",
+          addressStreet: "",
+          addressCity: "",
+          addressState: "",
+          addressZip: "",
+          addressCountry: "",
+          role: "employee" as "admin" | "manager" | "employee"
+        });
         onSuccess?.();
       }
     } catch (error) {
       console.error('Error creating user:', error);
       toast({
         title: "Error",
-        description: `Failed to create user: ${error.message}`,
+        description: error.message || "Failed to create user. Please try again.",
         variant: "destructive",
       });
     } finally {
