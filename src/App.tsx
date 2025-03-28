@@ -17,22 +17,26 @@ function App() {
   return (
     <LanguageProvider>
       <Router>
-        <div className="flex flex-col min-h-screen">
-          <Header />
-          <main className="flex-grow">
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/features" element={<Features />} />
-              <Route path="/pricing" element={<Pricing />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/timeclock" element={<Timeclock />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
+        <Routes>
+          <Route path="/timeclock" element={<Timeclock />} />
+          <Route path="*" element={
+            <div className="flex flex-col min-h-screen">
+              <Header />
+              <main className="flex-grow">
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/features" element={<Features />} />
+                  <Route path="/pricing" element={<Pricing />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                </Routes>
+              </main>
+              <Footer />
+            </div>
+          } />
+        </Routes>
       </Router>
     </LanguageProvider>
   );

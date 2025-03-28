@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Play, Square, Coffee, X, Clock } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -23,6 +22,7 @@ import {
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const Timeclock = () => {
+  const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedEmployee, setSelectedEmployee] = useState("");
@@ -93,6 +93,10 @@ const Timeclock = () => {
       : 'timeclock.projectsSelected_plural';
     
     return t(key).replace('{count}', selectedProjects.length.toString());
+  };
+
+  const handleClosePage = () => {
+    navigate('/dashboard');
   };
 
   return (
@@ -238,12 +242,14 @@ const Timeclock = () => {
       <footer className="fixed bottom-0 left-0 right-0 p-4">
         <div className="max-w-md mx-auto">
           <Card className="p-4">
-            <Link to="/dashboard">
-              <Button variant="secondary" className="w-full">
-                <X className="w-4 h-4 mr-2" />
-                {t('timeclock.closePage')}
-              </Button>
-            </Link>
+            <Button 
+              variant="secondary" 
+              className="w-full"
+              onClick={handleClosePage}
+            >
+              <X className="w-4 h-4 mr-2" />
+              {t('timeclock.closePage')}
+            </Button>
           </Card>
         </div>
       </footer>
