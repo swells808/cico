@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Play, Square, Coffee, X, Clock } from "lucide-react";
@@ -12,12 +13,28 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Timeclock = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedEmployee, setSelectedEmployee] = useState("");
   const [pin, setPin] = useState("");
-  const [selectedProject, setSelectedProject] = useState("");
+  const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
+
+  // Project data for the dropdown
+  const projects = [
+    { id: "1", name: "Project A" },
+    { id: "2", name: "Project B" },
+    { id: "3", name: "Project C" },
+    { id: "4", name: "Project D" },
+    { id: "5", name: "Project E" },
+  ];
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -45,7 +62,23 @@ const Timeclock = () => {
     });
   };
 
-  const isActionEnabled = selectedEmployee && pin.length >= 4 && selectedProject;
+  // Toggle project selection
+  const toggleProject = (projectId: string) => {
+    setSelectedProjects(current => 
+      current.includes(projectId)
+        ? current.filter(id => id !== projectId)
+        : [...current, projectId]
+    );
+  };
+
+  // Get project names for display
+  const getSelectedProjectNames = () => {
+    return selectedProjects
+      .map(id => projects.find(p => p.id === id)?.name)
+      .filter(Boolean);
+  };
+
+  const isActionEnabled = selectedEmployee && pin.length >= 4 && selectedProjects.length > 0;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -105,18 +138,43 @@ const Timeclock = () => {
               className="mb-6"
             />
 
-            <Select value={selectedProject} onValueChange={setSelectedProject}>
-              <SelectTrigger className="w-full mb-6">
-                <SelectValue placeholder="Select Project" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value="1">Project A</SelectItem>
-                  <SelectItem value="2">Project B</SelectItem>
-                  <SelectItem value="3">Project C</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+            {/* Multi-select dropdown for projects */}
+            <div className="mb-6">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="w-full justify-between">
+                    <span className="truncate">
+                      {selectedProjects.length === 0 
+                        ? "Select Projects" 
+                        : `${selectedProjects.length} Project${selectedProjects.length > 1 ? 's' : ''} Selected`}
+                    </span>
+                    <span className="ml-2">▼</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-full max-h-60 overflow-auto">
+                  {projects.map((project) => (
+                    <DropdownMenuCheckboxItem
+                      key={project.id}
+                      checked={selectedProjects.includes(project.id)}
+                      onCheckedChange={() => toggleProject(project.id)}
+                    >
+                      {project.name}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              
+              {/* Display selected projects as badges */}
+              {selectedProjects.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {getSelectedProjectNames().map((name, index) => (
+                    <Badge key={index} variant="secondary">
+                      {name}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
 
             <div className="grid grid-cols-2 gap-4 mb-6">
               <Button

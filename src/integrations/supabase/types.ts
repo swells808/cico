@@ -9,6 +9,56 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      companies: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      company_members: {
+        Row: {
+          company_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_members_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           address_city: string | null
@@ -17,8 +67,10 @@ export type Database = {
           address_street: string | null
           address_zip: string | null
           avatar_url: string | null
+          company_id: string | null
           created_at: string
           email: string | null
+          employee_id: string | null
           first_name: string | null
           id: string
           last_name: string | null
@@ -34,8 +86,10 @@ export type Database = {
           address_street?: string | null
           address_zip?: string | null
           avatar_url?: string | null
+          company_id?: string | null
           created_at?: string
           email?: string | null
+          employee_id?: string | null
           first_name?: string | null
           id: string
           last_name?: string | null
@@ -51,8 +105,10 @@ export type Database = {
           address_street?: string | null
           address_zip?: string | null
           avatar_url?: string | null
+          company_id?: string | null
           created_at?: string
           email?: string | null
+          employee_id?: string | null
           first_name?: string | null
           id?: string
           last_name?: string | null
@@ -61,7 +117,15 @@ export type Database = {
           role?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       subscription_plans: {
         Row: {
@@ -139,32 +203,35 @@ export type Database = {
       }
       user_roles: {
         Row: {
+          company_id: string | null
           created_at: string
           id: string
-          role: Database["public"]["Enums"]["app_role"]
+          role: Database["public"]["Enums"]["user_role"]
           updated_at: string
           user_id: string
         }
         Insert: {
+          company_id?: string | null
           created_at?: string
           id?: string
-          role?: Database["public"]["Enums"]["app_role"]
+          role?: Database["public"]["Enums"]["user_role"]
           updated_at?: string
           user_id: string
         }
         Update: {
+          company_id?: string | null
           created_at?: string
           id?: string
-          role?: Database["public"]["Enums"]["app_role"]
+          role?: Database["public"]["Enums"]["user_role"]
           updated_at?: string
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "user_roles_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
-            referencedRelation: "profiles"
+            foreignKeyName: "user_roles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
@@ -180,9 +247,17 @@ export type Database = {
         }
         Returns: boolean
       }
+      has_role_in_company: {
+        Args: {
+          role: Database["public"]["Enums"]["user_role"]
+          company_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "manager" | "employee"
+      user_role: "admin" | "supervisor" | "employee"
     }
     CompositeTypes: {
       [_ in never]: never
