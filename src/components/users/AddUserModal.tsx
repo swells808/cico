@@ -3,7 +3,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus } from "lucide-react";
+import { supabaseAdmin } from "@/integrations/supabase/admin-client";
+import { useToast } from "@/hooks/use-toast";
+import { UserPlus } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -11,76 +13,81 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
-import { supabaseAdmin } from "@/integrations/supabase/admin-client";
 
-interface AddUserModalProps {
-  onSuccess?: () => void;
+interface FormData {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  addressStreet: string;
+  addressCity: string;
+  addressState: string;
+  addressZip: string;
+  addressCountry: string;
+  role: "admin" | "manager" | "employee";
 }
 
-export const AddUserModal: React.FC<AddUserModalProps> = ({ onSuccess }) => {
+export const AddUserModal = () => {
   const { toast } = useToast();
   const [open, setOpen] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [formData, setFormData] = React.useState({
+  const [loading, setLoading] = React.useState(false);
+  const [formData, setFormData] = React.useState<FormData>({
+    email: "",
+    password: "",
     firstName: "",
     lastName: "",
-    email: "",
-    pin: "",
-    password: "",
     phone: "",
     addressStreet: "",
     addressCity: "",
     addressState: "",
     addressZip: "",
     addressCountry: "",
-    role: "employee" as "admin" | "supervisor" | "employee"
+    role: "employee"
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setLoading(true);
 
     try {
-      // First, create the user in auth.users
+      // Step 1: Create the user in auth
       const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
         email: formData.email,
         password: formData.password,
-        email_confirm: true,
-        user_metadata: {
-          first_name: formData.firstName,
-          last_name: formData.lastName
-        }
+        email_confirm: true
       });
 
       if (authError) {
-        console.error('Auth Error:', authError);
         throw authError;
       }
 
-      if (!authData.user) {
-        throw new Error('No user data returned');
+      if (!authData?.user) {
+        throw new Error("Failed to create user");
       }
 
-      console.log('User created:', authData.user);
-
-      // Then create the profile
-      const { error: profileError } = await supabaseAdmin.from('profiles').insert({
+      // Step 2: Create user profile in the users table
+      const { error: profileError } = await supabaseAdmin.from('users').insert({
         id: authData.user.id,
+        email: formData.email,
         first_name: formData.firstName,
         last_name: formData.lastName,
-        email: formData.email,
-        pin_code: formData.pin,
-        phone_number: formData.phone,
+        phone: formData.phone,
         address_street: formData.addressStreet,
         address_city: formData.addressCity,
         address_state: formData.addressState,
         address_zip: formData.addressZip,
-        address_country: formData.addressCountry
+        address_country: formData.addressCountry,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       });
 
       if (profileError) {
-        console.error('Profile Error:', profileError);
+        console.error("Profile creation error:", profileError);
+        
+        // Attempt to clean up the auth user if profile creation fails
+        await supabaseAdmin.auth.admin.deleteUser(authData.user.id);
+        
         throw profileError;
       }
 
@@ -95,22 +102,26 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ onSuccess }) => {
       });
 
       if (roleError) {
-        console.error('Role Error:', roleError);
+        console.error("Role assignment error:", roleError);
+        
+        // Attempt to clean up if role assignment fails
+        await supabaseAdmin.from('users').delete().eq('id', authData.user.id);
+        await supabaseAdmin.auth.admin.deleteUser(authData.user.id);
+        
         throw roleError;
       }
 
       toast({
-        title: "Success",
-        description: "User has been created successfully.",
+        title: "User Created",
+        description: `Successfully created user ${formData.firstName} ${formData.lastName}`,
       });
-      
-      setOpen(false);
+
+      // Reset form and close modal
       setFormData({
+        email: "",
+        password: "",
         firstName: "",
         lastName: "",
-        email: "",
-        pin: "",
-        password: "",
         phone: "",
         addressStreet: "",
         addressCity: "",
@@ -119,29 +130,28 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ onSuccess }) => {
         addressCountry: "",
         role: "employee"
       });
-      
-      onSuccess?.();
-    } catch (error) {
-      console.error('Error creating user:', error);
+      setOpen(false);
+    } catch (error: any) {
+      console.error("Error creating user:", error);
       toast({
-        title: "Error",
-        description: error.message || "Failed to create user. Please try again.",
+        title: "Error Creating User",
+        description: error.message || "There was an error creating the user",
         variant: "destructive",
       });
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-[#4BA0F4] hover:bg-[#4BA0F4]/90">
-          <Plus className="w-4 h-4 mr-2" />
-          Add New User
+        <Button className="bg-[#008000] hover:bg-[#008000]/90 text-white">
+          <UserPlus className="w-4 h-4 mr-2" />
+          Add User
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add New User</DialogTitle>
         </DialogHeader>
@@ -151,117 +161,110 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ onSuccess }) => {
               <Label htmlFor="firstName">First Name</Label>
               <Input
                 id="firstName"
+                required
                 value={formData.firstName}
                 onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
-                required
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="lastName">Last Name</Label>
               <Input
                 id="lastName"
+                required
                 value={formData.lastName}
                 onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
-                required
               />
             </div>
           </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="pin">Default PIN</Label>
-              <Input
-                id="pin"
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                value={formData.pin}
-                onChange={(e) => setFormData(prev => ({ ...prev, pin: e.target.value }))}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Default Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={formData.password}
-                onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
-                required
-              />
-            </div>
-          </div>
-
+          
           <div className="space-y-2">
-            <Label htmlFor="email">Email Address</Label>
+            <Label htmlFor="email">Email</Label>
             <Input
               id="email"
               type="email"
+              required
               value={formData.email}
               onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-              required
             />
           </div>
-
+          
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone Number</Label>
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              type="password"
+              required
+              value={formData.password}
+              onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="phone">Phone</Label>
             <Input
               id="phone"
-              type="tel"
               value={formData.phone}
               onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-              required
             />
           </div>
-
-          <div className="space-y-4">
-            <Label>Address</Label>
+          
+          <div className="space-y-2">
+            <Label htmlFor="addressStreet">Street Address</Label>
             <Input
-              placeholder="Street Address"
+              id="addressStreet"
               value={formData.addressStreet}
               onChange={(e) => setFormData(prev => ({ ...prev, addressStreet: e.target.value }))}
-              required
             />
-            <div className="grid grid-cols-2 gap-4">
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="addressCity">City</Label>
               <Input
-                placeholder="City"
+                id="addressCity"
                 value={formData.addressCity}
                 onChange={(e) => setFormData(prev => ({ ...prev, addressCity: e.target.value }))}
-                required
-              />
-              <Input
-                placeholder="State"
-                value={formData.addressState}
-                onChange={(e) => setFormData(prev => ({ ...prev, addressState: e.target.value }))}
-                required
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="addressState">State/Province</Label>
               <Input
-                placeholder="ZIP Code"
-                value={formData.addressZip}
-                onChange={(e) => setFormData(prev => ({ ...prev, addressZip: e.target.value }))}
-                required
-              />
-              <Input
-                placeholder="Country"
-                value={formData.addressCountry}
-                onChange={(e) => setFormData(prev => ({ ...prev, addressCountry: e.target.value }))}
-                required
+                id="addressState"
+                value={formData.addressState}
+                onChange={(e) => setFormData(prev => ({ ...prev, addressState: e.target.value }))}
               />
             </div>
           </div>
-
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="addressZip">Zip/Postal Code</Label>
+              <Input
+                id="addressZip"
+                value={formData.addressZip}
+                onChange={(e) => setFormData(prev => ({ ...prev, addressZip: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="addressCountry">Country</Label>
+              <Input
+                id="addressCountry"
+                value={formData.addressCountry}
+                onChange={(e) => setFormData(prev => ({ ...prev, addressCountry: e.target.value }))}
+              />
+            </div>
+          </div>
+          
           <div className="space-y-2">
             <Label htmlFor="role">Role</Label>
             <Select
               value={formData.role}
-              onValueChange={(value: "admin" | "supervisor" | "employee") => 
+              onValueChange={(value: "admin" | "manager" | "employee") => 
                 setFormData(prev => ({ ...prev, role: value }))
               }
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Select a role" />
+              <SelectTrigger id="role">
+                <SelectValue placeholder="Select Role" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="admin">Admin</SelectItem>
@@ -270,13 +273,22 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ onSuccess }) => {
               </SelectContent>
             </Select>
           </div>
-
-          <div className="flex justify-end space-x-4 mt-6">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+          
+          <div className="flex justify-end space-x-2 pt-4">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => setOpen(false)}
+              disabled={loading}
+            >
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Creating..." : "Create User"}
+            <Button 
+              type="submit" 
+              className="bg-[#008000] hover:bg-[#008000]/90 text-white"
+              disabled={loading}
+            >
+              {loading ? "Creating..." : "Create User"}
             </Button>
           </div>
         </form>

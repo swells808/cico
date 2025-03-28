@@ -13,11 +13,13 @@ export const supabaseAdmin = createClient<Database>(
       autoRefreshToken: false,
       persistSession: false,
       detectSessionInUrl: false
+    },
+    global: {
+      headers: {
+        'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+        'apikey': SUPABASE_SERVICE_ROLE_KEY,
+        'X-Client-Info': 'supabase-js-admin'
+      }
     }
   }
 );
-
-// Set authorization headers directly on the REST client since setAuth method is not available
-supabaseAdmin.rest.headers['Authorization'] = `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`;
-supabaseAdmin.rest.headers['apikey'] = SUPABASE_SERVICE_ROLE_KEY;
-supabaseAdmin.rest.headers['X-Client-Info'] = 'supabase-js-admin';

@@ -20,8 +20,10 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Timeclock = () => {
+  const { language, setLanguage, t } = useLanguage();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedEmployee, setSelectedEmployee] = useState("");
   const [pin, setPin] = useState("");
@@ -45,7 +47,7 @@ const Timeclock = () => {
   }, []);
 
   const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', {
+    return date.toLocaleDateString(language === 'en' ? 'en-US' : language === 'es' ? 'es-ES' : 'fr-FR', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
@@ -54,7 +56,7 @@ const Timeclock = () => {
   };
 
   const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('en-US', {
+    return date.toLocaleTimeString(language === 'en' ? 'en-US' : language === 'es' ? 'es-ES' : 'fr-FR', {
       hour12: false,
       hour: '2-digit',
       minute: '2-digit',
@@ -80,13 +82,26 @@ const Timeclock = () => {
 
   const isActionEnabled = selectedEmployee && pin.length >= 4 && selectedProjects.length > 0;
 
+  // Format project selection text with pluralization
+  const formatProjectSelection = () => {
+    if (selectedProjects.length === 0) {
+      return t('timeclock.selectProjects');
+    }
+    
+    const key = selectedProjects.length === 1 
+      ? 'timeclock.projectsSelected' 
+      : 'timeclock.projectsSelected_plural';
+    
+    return t(key).replace('{count}', selectedProjects.length.toString());
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm p-4">
         <div className="w-full flex justify-center">
           <div className="flex items-center">
             <Clock className="text-[#4BA0F4] w-6 h-6 mr-2" />
-            <span className="text-xl font-semibold">CICO Timeclock</span>
+            <span className="text-xl font-semibold">{t('timeclock.title')}</span>
           </div>
         </div>
       </header>
@@ -101,9 +116,27 @@ const Timeclock = () => {
               {formatDate(currentTime)}
             </div>
             <div className="flex justify-center gap-3">
-              <Button variant="outline">English</Button>
-              <Button variant="outline">Español</Button>
-              <Button variant="outline">Français</Button>
+              <Button 
+                variant={language === 'en' ? 'default' : 'outline'} 
+                onClick={() => setLanguage('en')}
+                className={language === 'en' ? 'bg-[#008000] text-white' : ''}
+              >
+                English
+              </Button>
+              <Button 
+                variant={language === 'es' ? 'default' : 'outline'} 
+                onClick={() => setLanguage('es')}
+                className={language === 'es' ? 'bg-[#008000] text-white' : ''}
+              >
+                Español
+              </Button>
+              <Button 
+                variant={language === 'fr' ? 'default' : 'outline'} 
+                onClick={() => setLanguage('fr')}
+                className={language === 'fr' ? 'bg-[#008000] text-white' : ''}
+              >
+                Français
+              </Button>
             </div>
           </Card>
         </section>
@@ -111,13 +144,13 @@ const Timeclock = () => {
         <section className="max-w-md mx-auto">
           <Card className="p-6">
             <div className="text-center mb-6">
-              <h2 className="text-xl font-semibold mb-2">Select Employee</h2>
-              <p className="text-gray-600">Please select your name and enter PIN</p>
+              <h2 className="text-xl font-semibold mb-2">{t('timeclock.selectEmployee')}</h2>
+              <p className="text-gray-600">{t('timeclock.pleaseSelectAndPin')}</p>
             </div>
 
             <Select value={selectedEmployee} onValueChange={setSelectedEmployee}>
               <SelectTrigger className="w-full mb-4">
-                <SelectValue placeholder="Select Employee" />
+                <SelectValue placeholder={t('timeclock.selectEmployeeDropdown')} />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
@@ -131,7 +164,7 @@ const Timeclock = () => {
 
             <Input
               type="password"
-              placeholder="Enter PIN"
+              placeholder={t('timeclock.enterPin')}
               value={pin}
               onChange={(e) => setPin(e.target.value)}
               maxLength={10}
@@ -144,9 +177,7 @@ const Timeclock = () => {
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" className="w-full justify-between">
                     <span className="truncate">
-                      {selectedProjects.length === 0 
-                        ? "Select Projects" 
-                        : `${selectedProjects.length} Project${selectedProjects.length > 1 ? 's' : ''} Selected`}
+                      {formatProjectSelection()}
                     </span>
                     <span className="ml-2">▼</span>
                   </Button>
@@ -182,14 +213,14 @@ const Timeclock = () => {
                 className="bg-[#008000] hover:bg-[#008000]/90 text-white"
               >
                 <Play className="w-4 h-4 mr-2" />
-                Clock In
+                {t('timeclock.clockIn')}
               </Button>
               <Button
                 disabled={!isActionEnabled}
                 variant="destructive"
               >
                 <Square className="w-4 h-4 mr-2" />
-                Clock Out
+                {t('timeclock.clockOut')}
               </Button>
             </div>
 
@@ -198,7 +229,7 @@ const Timeclock = () => {
               className="w-full bg-[#4BA0F4] hover:bg-[#4BA0F4]/90 text-white mb-6"
             >
               <Coffee className="w-4 h-4 mr-2" />
-              Break
+              {t('timeclock.break')}
             </Button>
           </Card>
         </section>
@@ -210,7 +241,7 @@ const Timeclock = () => {
             <Link to="/dashboard">
               <Button variant="secondary" className="w-full">
                 <X className="w-4 h-4 mr-2" />
-                Close Page
+                {t('timeclock.closePage')}
               </Button>
             </Link>
           </Card>
