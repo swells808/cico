@@ -177,8 +177,6 @@ const Timeclock = () => {
               </SelectContent>
             </Select>
 
-            {/* Pin input removed */}
-
             {/* Multi-select dropdown for projects */}
             <div className="mb-6">
               <DropdownMenu>
