@@ -20,6 +20,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useLanguage } from "@/contexts/LanguageContext";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const Timeclock = () => {
   const navigate = useNavigate();
@@ -72,10 +78,15 @@ const Timeclock = () => {
     );
   };
 
+  // Remove a specific project
+  const removeProject = (projectId: string) => {
+    setSelectedProjects(current => current.filter(id => id !== projectId));
+  };
+
   // Get project names for display
   const getSelectedProjectNames = () => {
     return selectedProjects
-      .map(id => projects.find(p => p.id === id)?.name)
+      .map(id => projects.find(p => p.id === id))
       .filter(Boolean);
   };
 
@@ -192,13 +203,34 @@ const Timeclock = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
               
-              {/* Display selected projects as badges */}
+              {/* Display selected projects as badges with remove icon */}
               {selectedProjects.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {getSelectedProjectNames().map((name, index) => (
-                    <Badge key={index} variant="secondary">
-                      {name}
-                    </Badge>
+                  {getSelectedProjectNames().map((project) => project && (
+                    <TooltipProvider key={project.id}>
+                      <Tooltip>
+                        <Badge 
+                          className="flex items-center gap-1 pl-2 pr-1 py-1"
+                          variant="secondary"
+                        >
+                          <span>{project.name}</span>
+                          <TooltipTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              className="h-4 w-4 rounded-full bg-gray-200 hover:bg-gray-300 p-0 ml-1"
+                              onClick={() => removeProject(project.id)}
+                            >
+                              <X className="h-3 w-3" />
+                              <span className="sr-only">Remove {project.name}</span>
+                            </Button>
+                          </TooltipTrigger>
+                        </Badge>
+                        <TooltipContent>
+                          <p>{t('timeclock.removeProject')}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   ))}
                 </div>
               )}

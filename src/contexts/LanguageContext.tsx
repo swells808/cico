@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 type Language = 'en' | 'es' | 'fr';
@@ -22,6 +23,7 @@ const translations = {
     'timeclock.selectProjects': 'Select Projects',
     'timeclock.projectsSelected': '{count} Project Selected',
     'timeclock.projectsSelected_plural': '{count} Projects Selected',
+    'timeclock.removeProject': 'Remove Project',
     
     // Buttons
     'timeclock.clockIn': 'Clock In',
@@ -47,6 +49,7 @@ const translations = {
     'timeclock.selectProjects': 'Seleccionar Proyectos',
     'timeclock.projectsSelected': '{count} Proyecto Seleccionado',
     'timeclock.projectsSelected_plural': '{count} Proyectos Seleccionados',
+    'timeclock.removeProject': 'Eliminar Proyecto',
     
     // Buttons
     'timeclock.clockIn': 'Registrar Entrada',
@@ -72,6 +75,7 @@ const translations = {
     'timeclock.selectProjects': 'Sélectionner des Projets',
     'timeclock.projectsSelected': '{count} Projet Sélectionné',
     'timeclock.projectsSelected_plural': '{count} Projets Sélectionnés',
+    'timeclock.removeProject': 'Supprimer le Projet',
     
     // Buttons
     'timeclock.clockIn': 'Pointer Entrée',
