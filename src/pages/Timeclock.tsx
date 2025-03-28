@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Play, Square, Coffee, X, Clock } from "lucide-react";
@@ -11,7 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
@@ -26,7 +26,6 @@ const Timeclock = () => {
   const { language, setLanguage, t } = useLanguage();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedEmployee, setSelectedEmployee] = useState("");
-  const [pin, setPin] = useState("");
   const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
 
   // Project data for the dropdown
@@ -80,7 +79,8 @@ const Timeclock = () => {
       .filter(Boolean);
   };
 
-  const isActionEnabled = selectedEmployee && pin.length >= 4 && selectedProjects.length > 0;
+  // Updated to remove PIN from validation
+  const isActionEnabled = selectedEmployee && selectedProjects.length > 0;
 
   // Format project selection text with pluralization
   const formatProjectSelection = () => {
@@ -166,14 +166,7 @@ const Timeclock = () => {
               </SelectContent>
             </Select>
 
-            <Input
-              type="password"
-              placeholder={t('timeclock.enterPin')}
-              value={pin}
-              onChange={(e) => setPin(e.target.value)}
-              maxLength={10}
-              className="mb-6"
-            />
+            {/* Pin input removed */}
 
             {/* Multi-select dropdown for projects */}
             <div className="mb-6">

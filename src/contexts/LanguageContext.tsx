@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 type Language = 'en' | 'es' | 'fr';
@@ -16,11 +15,10 @@ const translations = {
     
     // Date and time labels
     'timeclock.selectEmployee': 'Select Employee',
-    'timeclock.pleaseSelectAndPin': 'Please select your name and enter PIN',
+    'timeclock.pleaseSelectAndPin': 'Please select your name and project',
     
     // Form fields
     'timeclock.selectEmployeeDropdown': 'Select Employee',
-    'timeclock.enterPin': 'Enter PIN',
     'timeclock.selectProjects': 'Select Projects',
     'timeclock.projectsSelected': '{count} Project Selected',
     'timeclock.projectsSelected_plural': '{count} Projects Selected',
@@ -42,11 +40,10 @@ const translations = {
     
     // Date and time labels
     'timeclock.selectEmployee': 'Seleccionar Empleado',
-    'timeclock.pleaseSelectAndPin': 'Por favor seleccione su nombre e ingrese el PIN',
+    'timeclock.pleaseSelectAndPin': 'Por favor seleccione su nombre y proyecto',
     
     // Form fields
     'timeclock.selectEmployeeDropdown': 'Seleccionar Empleado',
-    'timeclock.enterPin': 'Ingrese PIN',
     'timeclock.selectProjects': 'Seleccionar Proyectos',
     'timeclock.projectsSelected': '{count} Proyecto Seleccionado',
     'timeclock.projectsSelected_plural': '{count} Proyectos Seleccionados',
@@ -68,11 +65,10 @@ const translations = {
     
     // Date and time labels
     'timeclock.selectEmployee': 'Sélectionner un Employé',
-    'timeclock.pleaseSelectAndPin': 'Veuillez sélectionner votre nom et entrer votre code PIN',
+    'timeclock.pleaseSelectAndPin': 'Veuillez sélectionner votre nom et projet',
     
     // Form fields
     'timeclock.selectEmployeeDropdown': 'Sélectionner un Employé',
-    'timeclock.enterPin': 'Entrer le code PIN',
     'timeclock.selectProjects': 'Sélectionner des Projets',
     'timeclock.projectsSelected': '{count} Projet Sélectionné',
     'timeclock.projectsSelected_plural': '{count} Projets Sélectionnés',
@@ -85,7 +81,7 @@ const translations = {
     
     // Language names
     'language.english': 'Anglais',
-    'language.spanish': 'Espagnol',
+    'language.spanish': 'Español',
     'language.french': 'Français'
   }
 };
