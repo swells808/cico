@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -66,8 +67,8 @@ export const AddUserModal = () => {
         throw new Error("Failed to create user");
       }
 
-      // Step 2: Create user profile in the users table
-      const { error: profileError } = await supabaseAdmin.from('users').insert({
+      // Step 2: Create user profile in the profiles table instead of users
+      const { error: profileError } = await supabaseAdmin.from('profiles').insert({
         id: authData.user.id,
         email: formData.email,
         first_name: formData.firstName,
@@ -105,7 +106,7 @@ export const AddUserModal = () => {
         console.error("Role assignment error:", roleError);
         
         // Attempt to clean up if role assignment fails
-        await supabaseAdmin.from('users').delete().eq('id', authData.user.id);
+        await supabaseAdmin.from('profiles').delete().eq('id', authData.user.id);
         await supabaseAdmin.auth.admin.deleteUser(authData.user.id);
         
         throw roleError;
