@@ -17,5 +17,7 @@ export const supabaseAdmin = createClient<Database>(
   }
 );
 
-// Set default headers using the auth.setAuth method instead of accessing rest.headers directly
-supabaseAdmin.auth.setAuth(SUPABASE_SERVICE_ROLE_KEY);
+// Set authorization headers directly on the REST client since setAuth method is not available
+supabaseAdmin.rest.headers['Authorization'] = `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`;
+supabaseAdmin.rest.headers['apikey'] = SUPABASE_SERVICE_ROLE_KEY;
+supabaseAdmin.rest.headers['X-Client-Info'] = 'supabase-js-admin';

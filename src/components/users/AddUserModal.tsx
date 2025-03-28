@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -35,7 +34,7 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ onSuccess }) => {
     addressState: "",
     addressZip: "",
     addressCountry: "",
-    role: "employee" as "admin" | "manager" | "employee"
+    role: "employee" as "admin" | "supervisor" | "employee"
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -85,10 +84,14 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ onSuccess }) => {
         throw profileError;
       }
 
+      // Convert 'manager' role to 'supervisor' which is the allowed enum value in the database
+      // This keeps the UI showing 'manager' while correctly mapping to the DB schema
+      const dbRole = formData.role === "manager" ? "supervisor" : formData.role;
+
       // Finally assign the role
       const { error: roleError } = await supabaseAdmin.from('user_roles').insert({
         user_id: authData.user.id,
-        role: formData.role
+        role: dbRole
       });
 
       if (roleError) {
@@ -253,7 +256,7 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ onSuccess }) => {
             <Label htmlFor="role">Role</Label>
             <Select
               value={formData.role}
-              onValueChange={(value: "admin" | "manager" | "employee") => 
+              onValueChange={(value: "admin" | "supervisor" | "employee") => 
                 setFormData(prev => ({ ...prev, role: value }))
               }
             >
