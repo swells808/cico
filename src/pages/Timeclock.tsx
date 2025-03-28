@@ -57,7 +57,7 @@ const Timeclock = () => {
 
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString(language === 'en' ? 'en-US' : language === 'es' ? 'es-ES' : 'fr-FR', {
-      hour12: false,
+      hour12: true,
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit'
