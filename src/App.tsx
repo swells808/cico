@@ -18,7 +18,6 @@ function App() {
     <LanguageProvider>
       <Router>
         <Routes>
-          <Route path="/timeclock" element={<Timeclock />} />
           <Route path="*" element={
             <div className="flex flex-col min-h-screen">
               <Header />
@@ -31,6 +30,7 @@ function App() {
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/timeclock" element={<Timeclock />} />
                 </Routes>
               </main>
               <Footer />
