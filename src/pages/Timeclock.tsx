@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Play, Square, Coffee, X, Clock } from "lucide-react";
@@ -89,6 +90,7 @@ const Timeclock = () => {
       .filter(Boolean);
   };
 
+  // Updated to remove PIN from validation
   const isActionEnabled = selectedEmployee && selectedProjects.length > 0;
 
   // Format project selection text with pluralization
@@ -109,7 +111,16 @@ const Timeclock = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20">
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-white shadow-sm p-4">
+        <div className="w-full flex justify-center">
+          <div className="flex items-center">
+            <Clock className="text-[#4BA0F4] w-6 h-6 mr-2" />
+            <span className="text-xl font-semibold">{t('timeclock.title')}</span>
+          </div>
+        </div>
+      </header>
+
       <main className="container mx-auto px-4 py-8">
         <section className="mb-8 text-center">
           <Card className="p-8 mb-6">
@@ -165,6 +176,8 @@ const Timeclock = () => {
                 </SelectGroup>
               </SelectContent>
             </Select>
+
+            {/* Pin input removed */}
 
             {/* Multi-select dropdown for projects */}
             <div className="mb-6">
