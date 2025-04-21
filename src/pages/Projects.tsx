@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -9,7 +8,9 @@ import {
   Plus,
   MoreHorizontal,
   LayoutGrid,
-  List
+  List,
+  ArrowDownAZ,
+  ArrowUpZA
 } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/button";
@@ -22,8 +23,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  Select,
+  SelectContent,
+  SelectTrigger,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select"
 
-// Mock data for demonstration
+// Move projects data to the top level
 const projects = [
   {
     id: 1,
@@ -74,7 +82,9 @@ const Projects = () => {
   const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [searchQuery, setSearchQuery] = useState("");
-  
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
@@ -84,9 +94,18 @@ const Projects = () => {
     }
   };
 
-  const filteredProjects = projects.filter(project => 
-    project.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Filter and sort projects
+  const filteredProjects = projects
+    .filter(project => 
+      (statusFilter === "all" || project.status === statusFilter) &&
+      project.name.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (sortOrder === "asc") {
+        return a.status.localeCompare(b.status);
+      }
+      return b.status.localeCompare(a.status);
+    });
   
   return (
     <div className="min-h-screen bg-gray-50">
@@ -162,6 +181,37 @@ const Projects = () => {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
               <h2 className="text-xl font-semibold mb-4 md:mb-0">Projects</h2>
               <div className="flex flex-col md:flex-row gap-4">
+                {/* Status Filter */}
+                <Select
+                  value={statusFilter}
+                  onValueChange={(value) => setStatusFilter(value)}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Filter by status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="In Progress">In Progress</SelectItem>
+                    <SelectItem value="Active">Active</SelectItem>
+                    <SelectItem value="Completed">Completed</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                {/* Sort Order Toggle */}
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setSortOrder(prev => prev === "asc" ? "desc" : "asc")}
+                  className="w-10 h-10"
+                >
+                  {sortOrder === "asc" ? (
+                    <ArrowDownAZ className="h-4 w-4" />
+                  ) : (
+                    <ArrowUpZA className="h-4 w-4" />
+                  )}
+                </Button>
+
+                {/* Existing Search and View Toggle */}
                 <div className="relative">
                   <Input
                     type="text"
