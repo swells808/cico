@@ -12,6 +12,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Timeclock from './pages/Timeclock';
 import Projects from './pages/Projects';
+import EditProject from './pages/EditProject';
 import Users from './pages/Users';
 import { LanguageProvider } from "./contexts/LanguageContext";
 
@@ -23,6 +24,8 @@ function App() {
           <Route path="/timeclock" element={<Timeclock />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/projects" element={<Projects />} />
+          <Route path="/projects/new" element={<EditProject />} />
+          <Route path="/projects/edit/:projectId" element={<EditProject />} />
           <Route path="/users" element={<Users />} />
           <Route path="*" element={
             <div className="flex flex-col min-h-screen">

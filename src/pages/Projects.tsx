@@ -10,7 +10,8 @@ import {
   LayoutGrid,
   List,
   ArrowDownAZ,
-  ArrowUpZA
+  ArrowUpZA,
+  Edit
 } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/button";
@@ -258,7 +259,11 @@ const Projects = () => {
                     <LayoutGrid className="h-4 w-4" />
                   </Button>
                 </div>
-                <Button className="bg-[#008000] hover:bg-[#006400] text-white">
+                {/* Update the New Project button to link to the new project page */}
+                <Button 
+                  className="bg-[#008000] hover:bg-[#006400] text-white"
+                  onClick={() => navigate('/projects/new')}
+                >
                   <Plus className="h-4 w-4 mr-2" />
                   New Project
                 </Button>
@@ -367,8 +372,11 @@ const Projects = () => {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
+                              <DropdownMenuItem onClick={() => navigate(`/projects/edit/${project.id}`)}>
+                                <Edit className="h-4 w-4 mr-2" />
+                                Edit Project
+                              </DropdownMenuItem>
                               <DropdownMenuItem>View Details</DropdownMenuItem>
-                              <DropdownMenuItem>Edit Project</DropdownMenuItem>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem className="text-red-600">Archive</DropdownMenuItem>
                             </DropdownMenuContent>
@@ -412,7 +420,14 @@ const Projects = () => {
                           />
                         ))}
                       </div>
-                      <span className="text-sm text-gray-600">{project.deadline}</span>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="p-0 h-8 w-8"
+                        onClick={() => navigate(`/projects/edit/${project.id}`)}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
                     </div>
                   </div>
                 ))}
