@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Header } from './components/layout/Header';
@@ -15,6 +14,7 @@ import Projects from './pages/Projects';
 import EditProject from './pages/EditProject';
 import Users from './pages/Users';
 import { LanguageProvider } from "./contexts/LanguageContext";
+import EditUser from './pages/EditUser';
 
 function App() {
   return (
@@ -27,6 +27,8 @@ function App() {
           <Route path="/projects/new" element={<EditProject />} />
           <Route path="/projects/edit/:projectId" element={<EditProject />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/users/new" element={<EditUser />} />
+          <Route path="/users/edit/:userId" element={<EditUser />} />
           <Route path="*" element={
             <div className="flex flex-col min-h-screen">
               <Header />
