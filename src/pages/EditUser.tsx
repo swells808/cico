@@ -70,7 +70,9 @@ const EditUser = () => {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  <BreadcrumbLink as={Link} to="/users">Users</BreadcrumbLink>
+                  <BreadcrumbLink asChild>
+                    <Link to="/users">Users</Link>
+                  </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
