@@ -15,6 +15,7 @@ import EditProject from './pages/EditProject';
 import Users from './pages/Users';
 import { LanguageProvider } from "./contexts/LanguageContext";
 import EditUser from './pages/EditUser';
+import Reports from './pages/Reports';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Routes>
           <Route path="/timeclock" element={<Timeclock />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/reports" element={<Reports />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/new" element={<EditProject />} />
           <Route path="/projects/edit/:projectId" element={<EditProject />} />
