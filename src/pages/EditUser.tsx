@@ -61,6 +61,14 @@ const EditUser = () => {
     navigate('/users');
   };
 
+  const handleDeactivate = () => {
+    if (window.confirm('Are you sure you want to deactivate this user? This action cannot be undone.')) {
+      // TODO: Implement deactivate functionality
+      setFormData(prev => ({ ...prev, status: 'Inactive' }));
+      navigate('/users');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <UserHeader />
@@ -118,19 +126,32 @@ const EditUser = () => {
 
           {/* Action Buttons */}
           <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
-            <div className="container mx-auto px-4 flex justify-end space-x-4">
-              <Button
-                variant="outline"
-                onClick={() => navigate('/users')}
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={handleSave}
-                className="bg-green-600 hover:bg-green-700"
-              >
-                Save Changes
-              </Button>
+            <div className="container mx-auto px-4 flex justify-between">
+              {/* Left side - Deactivate button */}
+              {!isNewUser && (
+                <Button
+                  variant="outline"
+                  className="text-red-600 border-red-600 hover:bg-red-50"
+                  onClick={handleDeactivate}
+                >
+                  Deactivate User
+                </Button>
+              )}
+              {/* Right side - Cancel and Save buttons */}
+              <div className="flex space-x-4">
+                <Button
+                  variant="outline"
+                  onClick={() => navigate('/users')}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleSave}
+                  className="bg-green-600 hover:bg-green-700"
+                >
+                  Save Changes
+                </Button>
+              </div>
             </div>
           </div>
         </div>
