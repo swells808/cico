@@ -8,9 +8,9 @@ import {
   LineChart,
   ArrowUp,
   ChevronDown,
-  Calendar,
   Settings,
   LogOut,
+  RefreshCw,
 } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
+import { ReportFilters } from "@/components/reports/ReportFilters";
 
 const Reports = () => {
   const navigate = useNavigate();
@@ -95,18 +96,21 @@ const Reports = () => {
         {/* Reports Header */}
         <section className="mb-8">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-gray-800">Reports & Analytics</h1>
+            <h1 className="text-2xl font-bold text-gray-800">Reports</h1>
             <div className="flex space-x-4">
               <Button variant="outline" className="flex items-center">
-                <Calendar className="w-4 h-4 mr-2" />
-                Last 30 Days
-              </Button>
-              <Button className="bg-[#4BA0F4] hover:bg-[#4BA0F4]/90 text-white">
                 <Download className="w-4 h-4 mr-2" />
                 Export
               </Button>
+              <Button className="bg-[#4BA0F4] hover:bg-[#4BA0F4]/90 text-white flex items-center gap-2">
+                <RefreshCw className="w-4 h-4" />
+                Generate Report
+              </Button>
             </div>
           </div>
+
+          {/* Report Filters */}
+          <ReportFilters />
 
           {/* Overview Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
