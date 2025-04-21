@@ -65,13 +65,31 @@ const sampleProject = {
   ]
 };
 
+// Define the project type to include the id property
+interface Project {
+  id?: number;
+  name: string;
+  description: string;
+  department: string;
+  status: string;
+  startDate: Date;
+  endDate: Date;
+  team: number[];
+  estimatedHours: string;
+  hourlyBudget: string;
+  trackOvertime: boolean;
+  tasks: any[];
+  notes: string;
+  comments: any[];
+}
+
 const EditProject = () => {
   const { projectId } = useParams();
   const navigate = useNavigate();
   const isNewProject = !projectId;
   
-  // State for project data
-  const [project, setProject] = useState({
+  // State for project data with proper type
+  const [project, setProject] = useState<Project>({
     name: "",
     description: "",
     department: "",
@@ -119,8 +137,8 @@ const EditProject = () => {
   };
 
   const handleAddTeamMember = (memberId) => {
-    if (!project.team.includes(memberId)) {
-      setProject({ ...project, team: [...project.team, memberId] });
+    if (!project.team.includes(parseInt(memberId))) {
+      setProject({ ...project, team: [...project.team, parseInt(memberId)] });
     }
   };
 
@@ -212,7 +230,7 @@ const EditProject = () => {
           <Breadcrumb className="mb-2">
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbLink as={Link} to="/projects">Projects</BreadcrumbLink>
+                <Link to="/projects" className="transition-colors hover:text-foreground">Projects</Link>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
@@ -223,9 +241,11 @@ const EditProject = () => {
           
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold">{isNewProject ? "New Project" : "Edit Project"}</h1>
-            <Button variant="outline" size="sm" className="flex items-center gap-1" as={Link} to="/projects">
-              <ArrowLeft className="h-4 w-4" /> Back to Projects
-            </Button>
+            <Link to="/projects">
+              <Button variant="outline" size="sm" className="flex items-center gap-1">
+                <ArrowLeft className="h-4 w-4" /> Back to Projects
+              </Button>
+            </Link>
           </div>
         </div>
 
@@ -339,7 +359,7 @@ const EditProject = () => {
                   </SelectTrigger>
                   <SelectContent>
                     {teamMembers.filter(m => !project.team.includes(m.id)).map(member => (
-                      <SelectItem key={member.id} value={member.id}>
+                      <SelectItem key={member.id} value={member.id.toString()}>
                         <div className="flex items-center">
                           <img src={member.avatar} alt={member.name} className="w-6 h-6 rounded-full mr-2" />
                           {member.name}
@@ -525,3 +545,4 @@ const EditProject = () => {
 };
 
 export default EditProject;
+
