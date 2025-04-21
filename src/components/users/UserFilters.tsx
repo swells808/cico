@@ -1,7 +1,7 @@
-
 import React from "react";
 import { Search, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import {
   Select,
   SelectContent,
@@ -27,6 +27,12 @@ export const UserFilters: React.FC<UserFiltersProps> = ({
   onRoleFilter,
   onStatusFilter
 }) => {
+  const navigate = useNavigate();
+
+  const handleAddNewUser = () => {
+    navigate('/users/new');
+  };
+
   return (
     <div className="bg-white rounded-lg shadow p-4 mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <div className="flex-1 relative w-full">
@@ -75,7 +81,10 @@ export const UserFilters: React.FC<UserFiltersProps> = ({
           </Select>
         </div>
         
-        <Button className="bg-[#4BA0F4] hover:bg-[#4BA0F4]/90 text-white">
+        <Button 
+          className="bg-[#4BA0F4] hover:bg-[#4BA0F4]/90 text-white"
+          onClick={handleAddNewUser}
+        >
           <Plus className="mr-2 h-4 w-4" />
           Add New User
         </Button>
