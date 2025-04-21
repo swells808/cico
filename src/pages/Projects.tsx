@@ -83,6 +83,7 @@ const Projects = () => {
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [sortField, setSortField] = useState<"status" | "hours" | "deadline">("status");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   const handleLogout = async () => {
@@ -94,6 +95,15 @@ const Projects = () => {
     }
   };
 
+  const handleSort = (field: "status" | "hours" | "deadline") => {
+    if (sortField === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortOrder("asc");
+    }
+  };
+
   // Filter and sort projects
   const filteredProjects = projects
     .filter(project => 
@@ -101,10 +111,18 @@ const Projects = () => {
       project.name.toLowerCase().includes(searchQuery.toLowerCase())
     )
     .sort((a, b) => {
-      if (sortOrder === "asc") {
-        return a.status.localeCompare(b.status);
+      const direction = sortOrder === "asc" ? 1 : -1;
+      
+      switch (sortField) {
+        case "status":
+          return direction * a.status.localeCompare(b.status);
+        case "hours":
+          return direction * (parseInt(a.hours) - parseInt(b.hours));
+        case "deadline":
+          return direction * (new Date(a.deadline).getTime() - new Date(b.deadline).getTime());
+        default:
+          return 0;
       }
-      return b.status.localeCompare(a.status);
     });
   
   return (
@@ -255,9 +273,57 @@ const Projects = () => {
                     <tr className="border-b border-gray-100">
                       <th className="text-left py-4 px-4">Project Name</th>
                       <th className="text-left py-4 px-4">Team</th>
-                      <th className="text-left py-4 px-4">Status</th>
-                      <th className="text-left py-4 px-4">Hours</th>
-                      <th className="text-left py-4 px-4">Deadline</th>
+                      <th 
+                        className="text-left py-4 px-4 cursor-pointer group"
+                        onClick={() => handleSort("status")}
+                      >
+                        <div className="flex items-center gap-1">
+                          Status
+                          {sortField === "status" ? (
+                            sortOrder === "asc" ? (
+                              <ArrowUpZA className="h-4 w-4 text-gray-500" />
+                            ) : (
+                              <ArrowDownAZ className="h-4 w-4 text-gray-500" />
+                            )
+                          ) : (
+                            <ArrowDownAZ className="h-4 w-4 text-gray-500 opacity-0 group-hover:opacity-100" />
+                          )}
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left py-4 px-4 cursor-pointer group"
+                        onClick={() => handleSort("hours")}
+                      >
+                        <div className="flex items-center gap-1">
+                          Hours
+                          {sortField === "hours" ? (
+                            sortOrder === "asc" ? (
+                              <ArrowUpZA className="h-4 w-4 text-gray-500" />
+                            ) : (
+                              <ArrowDownAZ className="h-4 w-4 text-gray-500" />
+                            )
+                          ) : (
+                            <ArrowDownAZ className="h-4 w-4 text-gray-500 opacity-0 group-hover:opacity-100" />
+                          )}
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left py-4 px-4 cursor-pointer group"
+                        onClick={() => handleSort("deadline")}
+                      >
+                        <div className="flex items-center gap-1">
+                          Deadline
+                          {sortField === "deadline" ? (
+                            sortOrder === "asc" ? (
+                              <ArrowUpZA className="h-4 w-4 text-gray-500" />
+                            ) : (
+                              <ArrowDownAZ className="h-4 w-4 text-gray-500" />
+                            )
+                          ) : (
+                            <ArrowDownAZ className="h-4 w-4 text-gray-500 opacity-0 group-hover:opacity-100" />
+                          )}
+                        </div>
+                      </th>
                       <th className="text-left py-4 px-4">Actions</th>
                     </tr>
                   </thead>
