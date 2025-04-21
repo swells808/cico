@@ -51,14 +51,14 @@ export const ProjectTask: React.FC<ProjectTaskProps> = ({
       />
       
       <Select
-        value={task.assignee?.toString() || ""}
-        onValueChange={(value) => onUpdate("assignee", value ? parseInt(value) : null)}
+        value={task.assignee?.toString() || "unassigned"}
+        onValueChange={(value) => onUpdate("assignee", value === "unassigned" ? null : parseInt(value))}
       >
         <SelectTrigger className="w-40">
           <SelectValue placeholder="Assignee" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="">Unassigned</SelectItem>
+          <SelectItem value="unassigned">Unassigned</SelectItem>
           {teamMembers.map((member) => (
             <SelectItem key={member.id} value={member.id.toString()}>
               <div className="flex items-center">
