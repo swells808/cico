@@ -1,6 +1,7 @@
 
 import React from "react";
 import { MoreHorizontal, Check } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -33,7 +34,12 @@ export const UserTable: React.FC<UserTableProps> = ({
   onUserSelect,
   onSelectAll,
 }) => {
+  const navigate = useNavigate();
   const allSelected = users.length > 0 && selectedUsers.length === users.length;
+
+  const handleEditUser = (user: User) => {
+    navigate(`/users/edit/${user.id}`);
+  };
 
   return (
     <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -114,7 +120,7 @@ export const UserTable: React.FC<UserTableProps> = ({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem>View Profile</DropdownMenuItem>
-                      <DropdownMenuItem>Edit User</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleEditUser(user)}>Edit User</DropdownMenuItem>
                       <DropdownMenuItem className="text-red-600">Deactivate</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
