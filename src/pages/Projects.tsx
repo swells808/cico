@@ -83,6 +83,7 @@ const Projects = () => {
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [sortField, setSortField] = useState<"status" | "hours" | "deadline">("status");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   const handleLogout = async () => {
@@ -94,7 +95,7 @@ const Projects = () => {
     }
   };
 
-  // Filter and sort projects
+  // Enhanced filter and sort projects
   const filteredProjects = projects
     .filter(project => 
       (statusFilter === "all" || project.status === statusFilter) &&
@@ -102,9 +103,23 @@ const Projects = () => {
     )
     .sort((a, b) => {
       if (sortOrder === "asc") {
-        return a.status.localeCompare(b.status);
+        switch (sortField) {
+          case "hours":
+            return parseInt(a.hours) - parseInt(b.hours);
+          case "deadline":
+            return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
+          default:
+            return a.status.localeCompare(b.status);
+        }
       }
-      return b.status.localeCompare(a.status);
+      switch (sortField) {
+        case "hours":
+          return parseInt(b.hours) - parseInt(a.hours);
+        case "deadline":
+          return new Date(b.deadline).getTime() - new Date(a.deadline).getTime();
+        default:
+          return b.status.localeCompare(a.status);
+      }
     });
   
   return (
@@ -194,6 +209,21 @@ const Projects = () => {
                     <SelectItem value="In Progress">In Progress</SelectItem>
                     <SelectItem value="Active">Active</SelectItem>
                     <SelectItem value="Completed">Completed</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                {/* Sort Field Select */}
+                <Select
+                  value={sortField}
+                  onValueChange={(value: "status" | "hours" | "deadline") => setSortField(value)}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="status">Status</SelectItem>
+                    <SelectItem value="hours">Hours</SelectItem>
+                    <SelectItem value="deadline">Deadline</SelectItem>
                   </SelectContent>
                 </Select>
 
