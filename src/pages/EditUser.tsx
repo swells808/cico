@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { UserHeader } from '@/components/users/UserHeader';
@@ -11,6 +10,7 @@ import { UserTimeSummary } from '@/components/users/UserTimeSummary';
 import { UserNotes } from '@/components/users/UserNotes';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react';
+import { UserProfilePhoto } from '@/components/users/UserProfilePhoto';
 
 export interface UserFormData {
   id?: string;
@@ -52,7 +52,8 @@ const EditUser = () => {
     notes: '',
     hoursLogged: 0,
     lastClockIn: '',
-    lastClockOut: ''
+    lastClockOut: '',
+    avatar: ''
   });
 
   const handleSave = () => {
@@ -109,6 +110,7 @@ const EditUser = () => {
 
             {/* Right Column - Status and Summary */}
             <div className="space-y-6">
+              <UserProfilePhoto data={formData} setData={setFormData} />
               <UserAccountStatus data={formData} setData={setFormData} />
               {!isNewUser && <UserTimeSummary data={formData} />}
             </div>
