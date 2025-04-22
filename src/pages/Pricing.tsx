@@ -1,11 +1,43 @@
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/custom-button";
 import { Check } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+
+interface SubscriptionPlan {
+  id: string;
+  name: string;
+  price: number;
+  features: string[] | null;
+  stripe_price_id: string;
+}
 
 const Pricing = () => {
+  const [plans, setPlans] = useState<SubscriptionPlan[] | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from('subscription_plans')
+        .select('id, name, price, features, stripe_price_id');
+      if (!error && data) {
+        setPlans(data);
+      }
+      setIsLoading(false);
+    })();
+  }, []);
+
+  const personal = plans?.find(plan =>
+    plan.name.toLowerCase().includes('personal')
+  );
+  const pro = plans?.find(plan =>
+    plan.name.toLowerCase().includes('pro')
+  );
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -27,7 +59,6 @@ const Pricing = () => {
             </p>
           </div>
         </section>
-
         <section className="py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid md:grid-cols-2 gap-8">
@@ -36,7 +67,8 @@ const Pricing = () => {
                 <h3 className="text-xl font-semibold mb-2">Personal Plan</h3>
                 <p className="text-gray-600 mb-4">For Solopreneurs</p>
                 <div className="text-4xl font-bold mb-6">
-                  $2<span className="text-lg text-gray-500">/month</span>
+                  {isLoading ? '...' : personal ? `$${personal.price}` : '--'}
+                  <span className="text-lg text-gray-500">/month</span>
                 </div>
                 <ul className="space-y-4 mb-8">
                   <li className="flex items-center">
@@ -56,7 +88,6 @@ const Pricing = () => {
                   Start Free Trial
                 </Button>
               </div>
-
               {/* Pro Plan */}
               <div className="border-2 border-[#4BA0F4] rounded-xl p-8 bg-white shadow-md hover:shadow-lg transition-shadow relative">
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-[#4BA0F4] text-white px-4 py-1 rounded-full text-sm">
@@ -65,7 +96,8 @@ const Pricing = () => {
                 <h3 className="text-xl font-semibold mb-2">Pro Plan</h3>
                 <p className="text-gray-600 mb-4">For Growing Businesses</p>
                 <div className="text-4xl font-bold mb-6">
-                  $5<span className="text-lg text-gray-500">/month per user</span>
+                  {isLoading ? '...' : pro ? `$${pro.price}` : '--'}
+                  <span className="text-lg text-gray-500">/month per user</span>
                 </div>
                 <ul className="space-y-4 mb-8">
                   <li className="flex items-center">

@@ -1,21 +1,65 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { CheckCircle } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface PlansStepProps {
   onNext: () => void;
   onBack: () => void;
 }
 
+interface SubscriptionPlan {
+  id: string;
+  name: string;
+  price: number;
+  features: string[] | null;
+  stripe_price_id: string;
+}
+
 const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack }) => {
   const [selectedPlan, setSelectedPlan] = useState('personal');
   const [userCount, setUserCount] = useState('1');
   const [promoCode, setPromoCode] = useState('');
+  const [plans, setPlans] = useState<SubscriptionPlan[] | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Get plans from Supabase
+  useEffect(() => {
+    (async () => {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from('subscription_plans')
+        .select('id, name, price, features, stripe_price_id');
+      if (!error && data) {
+        setPlans(data);
+      }
+      setIsLoading(false);
+    })();
+  }, []);
+
+  const personal = plans?.find(plan =>
+    plan.name.toLowerCase().includes('personal')
+  );
+  const pro = plans?.find(plan =>
+    plan.name.toLowerCase().includes('pro')
+  );
+
+  const getTotal = () => {
+    if (isLoading || !personal || !pro) return '--';
+    if (selectedPlan === 'personal') {
+      return `$${personal.price}/month`;
+    }
+    if (selectedPlan === 'pro') {
+      const count = parseInt(userCount) || 1;
+      return `$${pro.price * count}/month`;
+    }
+    return '--';
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,7 +70,6 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <h2 className="text-xl font-semibold text-center">Choose Your Plan</h2>
-      
       <RadioGroup 
         value={selectedPlan}
         onValueChange={setSelectedPlan}
@@ -45,7 +88,9 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack }) => {
                   Perfect for individuals or small teams
                 </p>
                 <div className="mt-2">
-                  <span className="text-xl font-bold">$0</span>
+                  <span className="text-xl font-bold">
+                    {isLoading ? '...' : personal ? `$${personal.price}` : '--'}
+                  </span>
                   <span className="text-gray-500"> / month</span>
                 </div>
                 <ul className="mt-3 space-y-1 text-sm">
@@ -57,7 +102,6 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack }) => {
             </div>
           </CardContent>
         </Card>
-        
         <Card className={`border-2 ${selectedPlan === 'pro' ? 'border-[#008000]' : 'border-gray-200'}`}>
           <CardContent className="p-4">
             <div className="flex items-start">
@@ -71,7 +115,9 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack }) => {
                   For businesses that need advanced features
                 </p>
                 <div className="mt-2">
-                  <span className="text-xl font-bold">$12</span>
+                  <span className="text-xl font-bold">
+                    {isLoading ? '...' : pro ? `$${pro.price}` : '--'}
+                  </span>
                   <span className="text-gray-500"> / user / month</span>
                 </div>
                 <ul className="mt-3 space-y-1 text-sm">
@@ -79,7 +125,6 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack }) => {
                   <li>• Advanced reporting</li>
                   <li>• All premium features</li>
                 </ul>
-                
                 {selectedPlan === 'pro' && (
                   <div className="mt-4">
                     <Label htmlFor="userCount">Number of Users</Label>
@@ -92,7 +137,7 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack }) => {
                       className="w-full mt-1"
                     />
                     <p className="text-sm text-gray-500 mt-1">
-                      Total: ${parseInt(userCount) * 12}/month
+                      Total: {isLoading || !pro ? '--' : `$${parseInt(userCount || '1') * pro.price}/month`}
                     </p>
                   </div>
                 )}
@@ -101,7 +146,6 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack }) => {
           </CardContent>
         </Card>
       </RadioGroup>
-      
       <div className="pt-2">
         <Label htmlFor="promoCode">Promo Code</Label>
         <Input
@@ -112,7 +156,6 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack }) => {
           className="mt-1"
         />
       </div>
-      
       <div className="pt-4 flex justify-between">
         <Button type="button" variant="outline" onClick={onBack}>
           Back
@@ -120,6 +163,11 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack }) => {
         <Button type="submit" className="bg-[#008000] hover:bg-[#008000]/90">
           Continue to Free Trial
         </Button>
+      </div>
+      <div className="pt-2 text-right text-xs text-gray-500">
+        {selectedPlan === 'pro' && pro
+          ? `Per user: $${pro.price}/month`
+          : ''}
       </div>
     </form>
   );
