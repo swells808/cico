@@ -11,9 +11,9 @@ import CompletionStep from '@/components/onboarding/CompletionStep';
 
 const Onboarding: React.FC = () => {
   const [step, setStep] = useState(0);
-  
+
   const totalSteps = 6; // Total number of steps including completion
-  
+
   const nextStep = () => setStep(prev => Math.min(prev + 1, totalSteps - 1));
   const prevStep = () => setStep(prev => Math.max(prev - 1, 0));
 
@@ -37,21 +37,20 @@ const Onboarding: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <header className="py-6 px-4 flex justify-center border-b">
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+      <header className="py-8 px-4 flex justify-center">
         <Logo className="h-9" />
       </header>
-      <main className="flex-1 flex flex-col items-center justify-center px-4 py-8">
-        <div className="w-full max-w-2xl">
+      <main className="flex-1 flex flex-col items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md">
           {/* Progress indicator */}
           <ProgressBar 
             currentStep={step + 1} 
             totalSteps={totalSteps}
             className="mb-8" 
           />
-          
-          {/* Content card */}
-          <div className="bg-white rounded-xl shadow-lg p-6 md:p-8">
+          {/* Main content card */}
+          <div className="bg-white rounded-2xl shadow-lg px-5 py-8 md:p-10">
             {renderStep()}
           </div>
         </div>

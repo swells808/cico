@@ -5,15 +5,33 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Plus, X } from 'lucide-react';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+} from '@/components/ui/select';
 
 interface CompanyDetailsStepProps {
   onNext: () => void;
 }
 
+const countryOptions = [
+  { label: 'United States', value: 'United States' },
+  { label: 'Canada', value: 'Canada' },
+  { label: 'Mexico', value: 'Mexico' },
+];
+
 const CompanyDetailsStep: React.FC<CompanyDetailsStepProps> = ({ onNext }) => {
   const [companyName, setCompanyName] = useState('');
   const [industry, setIndustry] = useState('');
-  const [address, setAddress] = useState('');
+  const [streetAddress, setStreetAddress] = useState('');
+  const [city, setCity] = useState('');
+  const [stateProvince, setStateProvince] = useState('');
+  const [postalCode, setPostalCode] = useState('');
+  const [country, setCountry] = useState('United States');
   const [phone, setPhone] = useState('');
   const [website, setWebsite] = useState('');
   const [departments, setDepartments] = useState<string[]>(['']);
@@ -43,7 +61,6 @@ const CompanyDetailsStep: React.FC<CompanyDetailsStepProps> = ({ onNext }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <h2 className="text-xl font-semibold text-center">Company Details</h2>
-      
       <div className="space-y-4">
         <div>
           <Label htmlFor="companyName">Company Name</Label>
@@ -55,7 +72,7 @@ const CompanyDetailsStep: React.FC<CompanyDetailsStepProps> = ({ onNext }) => {
             required
           />
         </div>
-        
+
         <div>
           <Label htmlFor="industry">Industry</Label>
           <Input
@@ -65,17 +82,74 @@ const CompanyDetailsStep: React.FC<CompanyDetailsStepProps> = ({ onNext }) => {
             placeholder="Select your industry"
           />
         </div>
-        
+
         <div>
-          <Label htmlFor="address">Address</Label>
-          <Input
-            id="address"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            placeholder="Enter company address"
-          />
+          <Label>Address</Label>
+          <div className="space-y-2 mt-1">
+            <div>
+              <Label htmlFor="street-address" className="sr-only">Street Address</Label>
+              <Input
+                id="street-address"
+                value={streetAddress}
+                onChange={(e) => setStreetAddress(e.target.value)}
+                placeholder="Street Address"
+                autoComplete="street-address"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <Label htmlFor="city" className="sr-only">City</Label>
+                <Input
+                  id="city"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  placeholder="City"
+                  autoComplete="address-level2"
+                />
+              </div>
+              <div>
+                <Label htmlFor="state-province" className="sr-only">State/Province</Label>
+                <Input
+                  id="state-province"
+                  value={stateProvince}
+                  onChange={(e) => setStateProvince(e.target.value)}
+                  placeholder="State/Province"
+                  autoComplete="address-level1"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <Label htmlFor="postal-code" className="sr-only">Postal Code</Label>
+                <Input
+                  id="postal-code"
+                  value={postalCode}
+                  onChange={(e) => setPostalCode(e.target.value)}
+                  placeholder="Postal Code"
+                  autoComplete="postal-code"
+                />
+              </div>
+              <div>
+                <Label htmlFor="country" className="sr-only">Country</Label>
+                <Select value={country} onValueChange={setCountry}>
+                  <SelectTrigger id="country">
+                    <SelectValue placeholder="Country" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {countryOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
         </div>
-        
+
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label htmlFor="phone">Phone Number</Label>
@@ -144,7 +218,7 @@ const CompanyDetailsStep: React.FC<CompanyDetailsStepProps> = ({ onNext }) => {
           />
         </div>
       </div>
-      
+
       <div className="pt-4 flex justify-end">
         <Button type="submit" className="bg-[#008000] hover:bg-[#008000]/90">
           Next
