@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,7 +23,6 @@ interface SubscriptionPlan {
 
 const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack }) => {
   const [selectedPlan, setSelectedPlan] = useState('personal');
-  const [userCount, setUserCount] = useState('1');
   const [promoCode, setPromoCode] = useState('');
   const [plans, setPlans] = useState<SubscriptionPlan[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -55,11 +53,7 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack }) => {
     if (selectedPlan === 'personal') {
       return `$${personal.price}/month`;
     }
-    if (selectedPlan === 'pro') {
-      const count = parseInt(userCount) || 1;
-      return `$${pro.price * count}/month`;
-    }
-    return '--';
+    return `$${pro.price}/month`;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -119,29 +113,13 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack }) => {
                   <span className="text-xl font-bold">
                     {isLoading ? '...' : pro ? `$${pro.price}` : '--'}
                   </span>
-                  <span className="text-gray-500"> / user / month</span>
+                  <span className="text-gray-500"> / month</span>
                 </div>
                 <ul className="mt-3 space-y-1 text-sm">
                   <li>• Unlimited users</li>
                   <li>• Advanced reporting</li>
                   <li>• All premium features</li>
                 </ul>
-                {selectedPlan === 'pro' && (
-                  <div className="mt-4">
-                    <Label htmlFor="userCount">Number of Users</Label>
-                    <Input
-                      id="userCount"
-                      type="number"
-                      min="1"
-                      value={userCount}
-                      onChange={(e) => setUserCount(e.target.value)}
-                      className="w-full mt-1"
-                    />
-                    <p className="text-sm text-gray-500 mt-1">
-                      Total: {isLoading || !pro ? '--' : `$${parseInt(userCount || '1') * pro.price}/month`}
-                    </p>
-                  </div>
-                )}
               </div>
             </div>
           </CardContent>
@@ -164,11 +142,6 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack }) => {
         <Button type="submit" className="bg-[#008000] hover:bg-[#008000]/90">
           Continue to Free Trial
         </Button>
-      </div>
-      <div className="pt-2 text-right text-xs text-gray-500">
-        {selectedPlan === 'pro' && pro
-          ? `Per user: $${pro.price}/month`
-          : ''}
       </div>
     </form>
   );
