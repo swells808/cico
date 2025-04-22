@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Logo } from "@/components/ui/Logo";
@@ -40,7 +39,7 @@ export const Header: React.FC = () => {
           <Link to="/login">
             <Button
               variant="outline"
-              className="border-[#008000] text-[#008000] hover:bg-[#008000]/10"
+              className="border-[#5296ED] text-[#5296ED] hover:bg-[#5296ED]/10"
             >
               <LogIn className="w-4 h-4 mr-1" />
               Login
@@ -49,7 +48,7 @@ export const Header: React.FC = () => {
           <Link to="/signup">
             <Button
               variant="default"
-              className="bg-[#008000] hover:bg-[#008000]/90 text-white"
+              className="bg-[#5296ED] hover:bg-[#5296ED]/90 text-white"
             >
               Sign Up
             </Button>
@@ -101,4 +100,3 @@ export const Header: React.FC = () => {
     </header>
   );
 }
-

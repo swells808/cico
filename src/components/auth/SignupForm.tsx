@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -207,7 +206,7 @@ export const SignupForm: React.FC = () => {
       </div>
       <Button
         type="submit"
-        className="w-full text-base font-semibold bg-[#9b87f5] hover:bg-[#7E69AB] rounded-lg py-3 mt-1"
+        className="w-full text-base font-semibold bg-[#5296ED] hover:bg-[#5296ED]/90 rounded-lg py-3 mt-1"
         disabled={isLoading}
       >
         {isLoading ? "Creating Account..." : "Create Account & Start Free Trial"}
@@ -215,7 +214,7 @@ export const SignupForm: React.FC = () => {
       <div className="flex justify-between mt-4 gap-2">
         <Button
           variant="outline"
-          className="w-full border-[#D6BCFA] text-[#7E69AB]"
+          className="w-full border-[#5296ED] text-[#5296ED]"
           type="button"
           disabled={isLoading}
         >
@@ -230,7 +229,7 @@ export const SignupForm: React.FC = () => {
         </Button>
         <Button
           variant="outline"
-          className="w-full border-[#D6BCFA] text-[#7E69AB]"
+          className="w-full border-[#5296ED] text-[#5296ED]"
           type="button"
           disabled={isLoading}
         >
@@ -244,10 +243,10 @@ export const SignupForm: React.FC = () => {
           Sign Up with Microsoft
         </Button>
       </div>
-      <div className="flex justify-center text-xs text-[#7E69AB] mt-3">
+      <div className="flex justify-center text-xs text-[#5296ED] mt-3">
         <span>
           Already have an account?{" "}
-          <Link to="/login" className="text-[#1EAEDB] hover:underline font-medium">
+          <Link to="/login" className="text-[#5296ED] hover:underline font-medium">
             Log In
           </Link>
         </span>
