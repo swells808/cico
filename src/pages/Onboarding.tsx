@@ -1,55 +1,63 @@
 
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/ui/Logo';
+import ProgressBar from '@/components/onboarding/ProgressBar';
+import CompanyDetailsStep from '@/components/onboarding/CompanyDetailsStep';
+import TeamMembersStep from '@/components/onboarding/TeamMembersStep';
+import WorkHoursStep from '@/components/onboarding/WorkHoursStep';
+import FeaturesStep from '@/components/onboarding/FeaturesStep';
+import PlansStep from '@/components/onboarding/PlansStep';
+import CompletionStep from '@/components/onboarding/CompletionStep';
 
 const Onboarding: React.FC = () => {
   const [step, setStep] = useState(0);
+  
+  const totalSteps = 6; // Total number of steps including completion
+  
+  const nextStep = () => setStep(prev => Math.min(prev + 1, totalSteps - 1));
+  const prevStep = () => setStep(prev => Math.max(prev - 1, 0));
 
-  function renderWelcome() {
-    return (
-      <div className="flex flex-col items-center">
-        <Logo className="h-12 mb-6" />
-        <h1 className="text-2xl font-bold text-[#1A1F2C] text-center">Welcome to CICO Timeclock!</h1>
-        <p className="text-gray-600 mt-2 text-center">
-          Let's get your account set up in a few easy steps.
-        </p>
-        <Button className="mt-10 px-8 py-3 text-base bg-[#008000] hover:bg-[#008000]/90" onClick={() => setStep(1)}>
-          Get Started
-        </Button>
-      </div>
-    );
-  }
-
-  function renderStep1() {
-    return (
-      <div className="flex flex-col items-center">
-        <h2 className="text-xl font-semibold text-center mb-3">Welcome!</h2>
-        <p className="text-gray-600 text-center">
-          You're on step 1 of onboarding.<br />More steps coming soon.
-        </p>
-        <Button className="mt-8 px-8 py-3 text-base bg-[#008000] hover:bg-[#008000]/90" onClick={() => setStep(0)}>
-          Back
-        </Button>
-      </div>
-    );
+  function renderStep() {
+    switch (step) {
+      case 0:
+        return <CompanyDetailsStep onNext={nextStep} />;
+      case 1:
+        return <TeamMembersStep onNext={nextStep} onBack={prevStep} />;
+      case 2:
+        return <WorkHoursStep onNext={nextStep} onBack={prevStep} />;
+      case 3:
+        return <FeaturesStep onNext={nextStep} onBack={prevStep} />;
+      case 4:
+        return <PlansStep onNext={nextStep} onBack={prevStep} />;
+      case 5:
+        return <CompletionStep onBack={prevStep} />;
+      default:
+        return <CompanyDetailsStep onNext={nextStep} />;
+    }
   }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <header className="py-6 px-4 flex justify-center">
-        <Logo className="h-10" />
+      <header className="py-6 px-4 flex justify-center border-b">
+        <Logo className="h-9" />
       </header>
-      <main className="flex-1 flex flex-col items-center justify-center px-4">
-        <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
-          {step === 0 && renderWelcome()}
-          {step === 1 && renderStep1()}
+      <main className="flex-1 flex flex-col items-center justify-center px-4 py-8">
+        <div className="w-full max-w-2xl">
+          {/* Progress indicator */}
+          <ProgressBar 
+            currentStep={step + 1} 
+            totalSteps={totalSteps}
+            className="mb-8" 
+          />
+          
+          {/* Content card */}
+          <div className="bg-white rounded-xl shadow-lg p-6 md:p-8">
+            {renderStep()}
+          </div>
         </div>
       </main>
-      <footer className="py-4 px-4 border-t">
-        <div className="flex justify-center gap-2">
-          {/* Progress dots could be placed here */}
-        </div>
+      <footer className="py-4 px-4 text-center text-sm text-gray-500">
+        <p>© {new Date().getFullYear()} CICO Timeclock. All rights reserved.</p>
       </footer>
     </div>
   );
