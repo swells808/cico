@@ -36,15 +36,25 @@ export const Header: React.FC = () => {
           ))}
         </nav>
 
-        <Link to="/login" className="max-sm:hidden">
-          <Button
-            variant="default"
-            className="bg-[#008000] hover:bg-[#008000]/90 text-white flex items-center gap-2"
-          >
-            <LogIn className="w-4 h-4" />
-            Login / Sign Up
-          </Button>
-        </Link>
+        <div className="flex gap-3 max-sm:hidden">
+          <Link to="/login">
+            <Button
+              variant="outline"
+              className="border-[#008000] text-[#008000] hover:bg-[#008000]/10"
+            >
+              <LogIn className="w-4 h-4 mr-1" />
+              Login
+            </Button>
+          </Link>
+          <Link to="/signup">
+            <Button
+              variant="default"
+              className="bg-[#008000] hover:bg-[#008000]/90 text-white"
+            >
+              Sign Up
+            </Button>
+          </Link>
+        </div>
 
         <button
           className="hidden max-sm:block text-gray-600"
@@ -71,11 +81,18 @@ export const Header: React.FC = () => {
               ))}
               <Link
                 to="/login"
-                className="flex items-center gap-2 text-white text-sm cursor-pointer bg-[#008000] px-3 py-2 rounded-lg mt-4"
+                className="flex items-center gap-2 text-[#008000] text-sm cursor-pointer px-3 py-2 mt-4 border border-[#008000] rounded-lg"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <LogIn className="w-4 h-4" />
-                Login / Sign Up
+                Login
+              </Link>
+              <Link
+                to="/signup"
+                className="flex items-center justify-center gap-2 text-white text-sm cursor-pointer bg-[#008000] px-3 py-2 rounded-lg mt-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Sign Up
               </Link>
             </div>
           </div>
@@ -83,4 +100,5 @@ export const Header: React.FC = () => {
       </div>
     </header>
   );
-};
+}
+
