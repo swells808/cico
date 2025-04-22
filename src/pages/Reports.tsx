@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -11,8 +10,8 @@ import {
   Settings,
   LogOut,
   RefreshCw,
-  FilePdf,
-  FileCsv,
+  File, // Replace FilePdf with File
+  File as FileIcon, // Use an alias for the CSV icon
 } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/button";
@@ -162,8 +161,18 @@ const Reports = () => {
         <body>
           <h2>${title}</h2>
           <div class="export-bar">
-            <button class="download-btn" id="${pdfBtnId}">${FilePdf ? '<svg fill="none" height="18" width="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect width="18" height="22" x="3" y="1" stroke="#fff" fill="none" rx="2"/><text x="7" y="18" font-size="9" fill="#fff">PDF</text></svg>' : ""} Save as PDF</button>
-            <button class="download-btn" id="${csvBtnId}">${FileCsv ? '<svg fill="none" height="18" width="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect width="18" height="22" x="3" y="1" stroke="#fff" fill="none" rx="2"/><text x="7" y="18" font-size="9" fill="#fff">CSV</text></svg>' : ""} Save as CSV</button>
+            <button class="download-btn" id="${pdfBtnId}">
+              ${File ? `<svg fill="none" height="18" width="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <rect width="18" height="22" x="3" y="1" stroke="#fff" fill="none" rx="2"/>
+                <text x="7" y="18" font-size="9" fill="#fff">PDF</text>
+              </svg>` : ""} Save as PDF
+            </button>
+            <button class="download-btn" id="${csvBtnId}">
+              ${FileIcon ? `<svg fill="none" height="18" width="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <rect width="18" height="22" x="3" y="1" stroke="#fff" fill="none" rx="2"/>
+                <text x="7" y="18" font-size="9" fill="#fff">CSV</text>
+              </svg>` : ""} Save as CSV
+            </button>
           </div>
           ${reportTable}
           <script>
