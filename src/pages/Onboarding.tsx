@@ -42,7 +42,7 @@ const Onboarding: React.FC = () => {
         <Logo className="h-9" />
       </header>
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-12">
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-md md:max-w-2xl">
           {/* Progress indicator */}
           <ProgressBar 
             currentStep={step + 1} 
