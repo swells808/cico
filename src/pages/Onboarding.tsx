@@ -33,12 +33,15 @@ const Onboarding: React.FC = () => {
   const [teamMembers, setTeamMembers] = useState<any[]>([]);
   const [workHours, setWorkHours] = useState<any>(null);
   const [features, setFeatures] = useState<any>(null);
-  // For simplicity, only companyDetails is in use right now
+  
+  console.log("Current step:", step);
+  console.log("Company details in state:", companyDetails);
 
   const nextStep = () => setStep(prev => Math.min(prev + 1, totalSteps - 1));
   const prevStep = () => setStep(prev => Math.max(prev - 1, 0));
 
   const handleCompanyDetailsComplete = (fields: CompanyDetailsData) => {
+    console.log("Company details completed:", fields);
     setCompanyDetails(fields);
     nextStep();
   };
@@ -112,4 +115,3 @@ const Onboarding: React.FC = () => {
 };
 
 export default Onboarding;
-

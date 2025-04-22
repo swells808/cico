@@ -73,10 +73,12 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack, companyDetails })
         title: "Company information is missing",
         variant: "destructive",
       });
+      console.error("Company details missing in PlansStep", companyDetails);
       return;
     }
 
     setIsSubmitting(true);
+    console.log("Submitting company details to Supabase:", companyDetails);
 
     // Prepare data for insert
     const {
@@ -90,26 +92,37 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack, companyDetails })
       phone,
       website,
       departments,
-      // companyLogo: File | null, we need to upload & grab url first (future)
     } = companyDetails;
 
     try {
       // Insert company to Supabase
-      const { error, data } = await supabase.from('companies').insert([
-        {
-          company_name: companyName,
-          industry: industry || null,
-          street_address: streetAddress,
-          city,
-          state_province: stateProvince,
-          postal_code: postalCode,
-          phone,
-          website: website || null,
-          departments: departments || null,
-          // company_logo_url: companyLogoUrl || null, // To support file upload in future
-        }
-      ]);
-      if (error) throw error;
+      const companyData = {
+        company_name: companyName,
+        industry: industry || null,
+        street_address: streetAddress,
+        city,
+        state_province: stateProvince,
+        postal_code: postalCode,
+        country,
+        phone,
+        website: website || null,
+        departments: departments || null,
+        // company_logo_url: companyLogoUrl || null, // To support file upload in future
+      };
+      
+      console.log("Formatted data for insertion:", companyData);
+      
+      const { error, data } = await supabase
+        .from('companies')
+        .insert([companyData])
+        .select();
+      
+      if (error) {
+        console.error("Supabase insertion error:", error);
+        throw error;
+      }
+      
+      console.log("Company created successfully:", data);
 
       toast({
         title: "Company created successfully.",
@@ -119,9 +132,10 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack, companyDetails })
 
       onNext();
     } catch (err: any) {
+      console.error("Error creating company:", err);
       toast({
         title: "Error creating company",
-        description: err?.message,
+        description: err?.message || "Unknown error occurred",
         variant: "destructive",
       });
     } finally {
@@ -213,4 +227,3 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack, companyDetails })
 };
 
 export default PlansStep;
-

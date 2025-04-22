@@ -14,6 +14,7 @@ import {
   SelectSeparator,
   SelectLabel,
 } from '@/components/ui/select';
+import { CompanyDetailsData } from '@/pages/Onboarding';
 
 // US States, Canadian Provinces, Mexican States
 const US_STATES = [
@@ -45,8 +46,8 @@ const countryOptions = [
 
 interface CompanyDetailsStepProps {
   onNext: () => void;
-  onComplete?: (fields: any) => void;
-  initialData?: any;
+  onComplete?: (fields: CompanyDetailsData) => void;
+  initialData?: CompanyDetailsData | null;
 }
 
 const validatePhone = (value: string) => {
@@ -110,7 +111,7 @@ const CompanyDetailsStep: React.FC<CompanyDetailsStepProps> = ({ onNext, onCompl
     if (Object.keys(newErrors).length > 0) return;
 
     // Prepare all company details to pass up
-    const companyData = {
+    const companyData: CompanyDetailsData = {
       companyName: companyName.trim(),
       industry: industry.trim() || undefined,
       streetAddress: streetAddress.trim(),
@@ -121,8 +122,9 @@ const CompanyDetailsStep: React.FC<CompanyDetailsStepProps> = ({ onNext, onCompl
       phone: phone.trim(),
       website: website.trim() || undefined,
       departments: nonEmptyDepartments.length > 0 ? nonEmptyDepartments : undefined,
-      companyLogo, // This is the File object, NOT URL—parent can handle upload if needed in future
     };
+
+    console.log("Company form submitted with data:", companyData);
 
     if (onComplete) onComplete(companyData);
     else onNext();
@@ -327,5 +329,3 @@ const CompanyDetailsStep: React.FC<CompanyDetailsStepProps> = ({ onNext, onCompl
 };
 
 export default CompanyDetailsStep;
-
-// NOTE: This file is now 300+ lines. Please consider asking me to refactor it.
