@@ -12,17 +12,41 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
+  SelectSeparator,
+  SelectLabel,
 } from '@/components/ui/select';
 
-interface CompanyDetailsStepProps {
-  onNext: () => void;
-}
+// US States, Canadian Provinces, Mexican States
+const US_STATES = [
+  "Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida",
+  "Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine",
+  "Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska",
+  "Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota",
+  "Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee",
+  "Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"
+];
+
+const CANADIAN_PROVINCES = [
+  "Alberta","British Columbia","Manitoba","New Brunswick","Newfoundland and Labrador",
+  "Nova Scotia","Ontario","Prince Edward Island","Quebec","Saskatchewan"
+];
+
+const MEXICAN_STATES = [
+  "Aguascalientes","Baja California","Baja California Sur","Campeche","Chiapas","Chihuahua","Coahuila",
+  "Colima","Durango","Guanajuato","Guerrero","Hidalgo","Jalisco","México","Michoacán","Morelos","Nayarit",
+  "Nuevo León","Oaxaca","Puebla","Querétaro","Quintana Roo","San Luis Potosí","Sinaloa","Sonora","Tabasco",
+  "Tamaulipas","Tlaxcala","Veracruz","Yucatán","Zacatecas"
+];
 
 const countryOptions = [
   { label: 'United States', value: 'United States' },
   { label: 'Canada', value: 'Canada' },
   { label: 'Mexico', value: 'Mexico' },
 ];
+
+interface CompanyDetailsStepProps {
+  onNext: () => void;
+}
 
 const CompanyDetailsStep: React.FC<CompanyDetailsStepProps> = ({ onNext }) => {
   const [companyName, setCompanyName] = useState('');
@@ -109,13 +133,43 @@ const CompanyDetailsStep: React.FC<CompanyDetailsStepProps> = ({ onNext }) => {
               </div>
               <div>
                 <Label htmlFor="state-province" className="sr-only">State/Province</Label>
-                <Input
-                  id="state-province"
+                <Select
                   value={stateProvince}
-                  onChange={(e) => setStateProvince(e.target.value)}
-                  placeholder="State/Province"
-                  autoComplete="address-level1"
-                />
+                  onValueChange={setStateProvince}
+                  // NOTE: If using react-hook-form, use controller instead
+                >
+                  <SelectTrigger id="state-province">
+                    <SelectValue placeholder="State/Province" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>US States</SelectLabel>
+                      {US_STATES.map((state) => (
+                        <SelectItem key={state} value={state}>
+                          {state}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                    <SelectSeparator />
+                    <SelectGroup>
+                      <SelectLabel>Canadian Provinces</SelectLabel>
+                      {CANADIAN_PROVINCES.map((province) => (
+                        <SelectItem key={province} value={province}>
+                          {province}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                    <SelectSeparator />
+                    <SelectGroup>
+                      <SelectLabel>Mexican States</SelectLabel>
+                      {MEXICAN_STATES.map((mexState) => (
+                        <SelectItem key={mexState} value={mexState}>
+                          {mexState}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-2">
@@ -229,3 +283,4 @@ const CompanyDetailsStep: React.FC<CompanyDetailsStepProps> = ({ onNext }) => {
 };
 
 export default CompanyDetailsStep;
+
