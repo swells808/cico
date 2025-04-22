@@ -221,22 +221,16 @@ const Reports = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-100">
+      <footer className="bg-[#F6F6F7] border-t border-gray-100">
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
-            <div className="flex space-x-4 text-sm text-gray-500">
-              <Link to="/support" className="hover:text-gray-700">
-                Support
-              </Link>
-              <Link to="/privacy" className="hover:text-gray-700">
-                Privacy Policy
-              </Link>
-              <Link to="/terms" className="hover:text-gray-700">
-                Terms
-              </Link>
+            <div className="text-sm text-[#8E9196] flex items-center gap-2">
+              <span>© 2025 CICO Timeclock. All rights reserved.</span>
             </div>
-            <div className="text-sm text-gray-500">
-              © 2025 CICO Timeclock
+            <div className="flex space-x-8 text-sm text-[#8E9196] font-medium">
+              <a href="/support" className="hover:text-gray-800">Support</a>
+              <a href="/privacy" className="hover:text-gray-800">Privacy Policy</a>
+              <a href="/terms" className="hover:text-gray-800">Terms</a>
             </div>
           </div>
         </div>
