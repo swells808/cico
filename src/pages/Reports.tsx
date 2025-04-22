@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -138,12 +137,12 @@ const Reports = () => {
 
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
               <div className="flex justify-between items-start mb-4">
-                <div className="text-gray-500">Team Performance</div>
-                <LineChart className="text-purple-500" />
+                <div className="text-gray-500">Overtime Hours</div>
+                <Clock className="text-orange-500" />
               </div>
-              <div className="text-2xl font-bold">92%</div>
-              <div className="text-sm text-purple-600 mt-2 flex items-center">
-                <ArrowUp className="w-4 h-4 mr-1" /> 5% increase
+              <div className="text-2xl font-bold">11</div>
+              <div className="text-sm text-orange-600 mt-2 flex items-center">
+                <ArrowUp className="w-4 h-4 mr-1" /> 2 hours vs last month
               </div>
             </div>
           </div>
