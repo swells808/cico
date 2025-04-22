@@ -37,6 +37,10 @@ export interface UserFormData {
 }
 
 const EditUser = () => {
+  const { userId } = useParams();
+  const navigate = useNavigate();
+  const isNewUser = !userId;
+  
   const [formData, setFormData] = useState<UserFormData>({
     firstName: '',
     lastName: '',
