@@ -211,10 +211,11 @@ export const SignupForm: React.FC = () => {
       >
         {isLoading ? "Creating Account..." : "Create Account & Start Free Trial"}
       </Button>
-      <div className="flex justify-between mt-4 gap-2">
+      {/* Modify the third-party sign-up buttons container */}
+      <div className="flex flex-col sm:flex-row gap-4">
         <Button
           variant="outline"
-          className="w-full border-[#5296ED] text-[#5296ED]"
+          className="w-full border-[#5296ED] text-[#5296ED] flex items-center justify-center"
           type="button"
           disabled={isLoading}
         >
@@ -229,7 +230,7 @@ export const SignupForm: React.FC = () => {
         </Button>
         <Button
           variant="outline"
-          className="w-full border-[#5296ED] text-[#5296ED]"
+          className="w-full border-[#5296ED] text-[#5296ED] flex items-center justify-center"
           type="button"
           disabled={isLoading}
         >
