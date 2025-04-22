@@ -95,7 +95,7 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack, companyDetails })
     } = companyDetails;
 
     try {
-      // Insert company to Supabase
+      // Explicitly format the data for insertion according to Supabase schema
       const companyData = {
         company_name: companyName,
         industry: industry || null,
@@ -106,15 +106,15 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack, companyDetails })
         country,
         phone,
         website: website || null,
-        departments: departments || null,
-        // company_logo_url: companyLogoUrl || null, // To support file upload in future
+        departments: departments || [],  // Ensure it's an array even if empty
       };
       
       console.log("Formatted data for insertion:", companyData);
       
+      // Use .select() to return the inserted data for confirmation
       const { error, data } = await supabase
         .from('companies')
-        .insert([companyData])
+        .insert(companyData)
         .select();
       
       if (error) {
