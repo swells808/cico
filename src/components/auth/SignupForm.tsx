@@ -8,12 +8,12 @@ import { NameFields } from "./signup/NameFields";
 import { EmailField } from "./signup/EmailField";
 import { CompanyField } from "./signup/CompanyField";
 import { PasswordFields } from "./signup/PasswordFields";
-import { RoleSelector } from "./signup/RoleSelector";
+// Removed import for RoleSelector
 import { TermsCheckbox } from "./signup/TermsCheckbox";
 import { SignupProviders } from "./signup/SignupProviders";
 import { SignupLoginLink } from "./signup/SignupLoginLink";
 
-const ROLES = ["Admin", "Manager", "Employee"];
+// Removed ROLES array
 
 export const SignupForm: React.FC = () => {
   const [form, setForm] = useState({
@@ -23,7 +23,7 @@ export const SignupForm: React.FC = () => {
     company: "",
     password: "",
     confirmPassword: "",
-    role: ROLES[2], // Employee default
+    // role: "Admin", // Role state REMOVED
     agreed: false,
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -34,9 +34,7 @@ export const SignupForm: React.FC = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleRoleChange = (value: string) => {
-    setForm((f) => ({ ...f, role: value }));
-  };
+  // Removed handleRoleChange
 
   const handleCheckbox = (checked: boolean) => {
     setForm((f) => ({ ...f, agreed: checked }));
@@ -68,7 +66,7 @@ export const SignupForm: React.FC = () => {
             first_name: form.firstName,
             last_name: form.lastName,
             company: form.company,
-            role: form.role,
+            role: "Admin", // Always assign Admin role on sign up
           },
         },
       });
@@ -110,11 +108,7 @@ export const SignupForm: React.FC = () => {
         isLoading={isLoading}
         onChange={handleChange}
       />
-      <RoleSelector
-        roles={ROLES}
-        current={form.role}
-        onChange={handleRoleChange}
-      />
+      {/* Removed RoleSelector section */}
       <TermsCheckbox agreed={form.agreed} onCheckedChange={handleCheckbox} />
       <Button
         type="submit"
