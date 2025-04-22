@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,18 +7,19 @@ import { Card, CardContent } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { Json } from '@/integrations/supabase/types';
 
+// Important: fix SubscriptionPlan type according to database structure!
 interface PlansStepProps {
   onNext: () => void;
   onBack: () => void;
 }
 
+// features is string[] because the Supabase table for 'subscription_plans' defines features as jsonb, storing an array
 interface SubscriptionPlan {
   id: string;
   name: string;
   price: number;
-  features: Json | null;
+  features: string[]; // <-- fixed type
   stripe_price_id: string;
 }
 
@@ -35,18 +37,18 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack }) => {
         .from('subscription_plans')
         .select('id, name, price, features, stripe_price_id');
       if (!error && data) {
-        setPlans(data);
+        // Enforce features as string[] in TS (could be empty array if not present)
+        setPlans(data.map(plan => ({
+          ...plan,
+          features: Array.isArray(plan.features) ? plan.features : [],
+        })));
       }
       setIsLoading(false);
     })();
   }, []);
 
-  const personal = plans?.find(plan =>
-    plan.name.toLowerCase().includes('personal')
-  );
-  const pro = plans?.find(plan =>
-    plan.name.toLowerCase().includes('pro')
-  );
+  const personal = plans?.find(plan => plan.name.toLowerCase().includes('personal'));
+  const pro = plans?.find(plan => plan.name.toLowerCase().includes('pro'));
 
   const getTotal = () => {
     if (isLoading || !personal || !pro) return '--';
@@ -58,14 +60,14 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would save the data before proceeding
+    // Information will be saved here if needed in future (for now, just triggers next step)
     onNext();
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <h2 className="text-xl font-semibold text-center">Choose Your Plan</h2>
-      <RadioGroup 
+      <RadioGroup
         value={selectedPlan}
         onValueChange={setSelectedPlan}
         className="flex flex-col space-y-4"
@@ -120,6 +122,7 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack }) => {
                   <li>• Advanced reporting</li>
                   <li>• All premium features</li>
                 </ul>
+                {/* Number of users and total price removed as requested */}
               </div>
             </div>
           </CardContent>
