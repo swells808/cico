@@ -152,24 +152,68 @@ const Reports = () => {
         <section className="bg-white rounded-xl shadow-sm border border-gray-100 mb-8">
           <div className="border-b border-gray-100">
             <div className="flex space-x-6 px-6">
-              <button className="px-4 py-4 text-[#4BA0F4] border-b-2 border-[#4BA0F4]">
-                Employee Reports
-              </button>
-              <button className="px-4 py-4 text-gray-500 hover:text-gray-700">
-                Project Reports
-              </button>
-              <button className="px-4 py-4 text-gray-500 hover:text-gray-700">
-                Payroll Reports
+              <button className="px-4 py-4 text-[#4BA0F4] border-b-2 border-[#4BA0F4] font-semibold">
+                Metrics
               </button>
             </div>
           </div>
           <div className="p-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-gray-50 rounded-lg p-4 h-[300px] flex items-center justify-center">
-                Work Hours Per Employee Chart
+              {/* Work Hours Per Employee Table */}
+              <div className="bg-gray-50 rounded-lg p-4 h-[300px] overflow-auto">
+                <div className="font-semibold text-gray-700 mb-2">Work Hours Per Employee</div>
+                <table className="min-w-full text-sm rounded-lg overflow-hidden">
+                  <thead>
+                    <tr className="bg-white border-b border-gray-200">
+                      <th className="py-2 px-3 text-left text-gray-500">Name</th>
+                      <th className="py-2 px-3 text-left text-gray-500">Week</th>
+                      <th className="py-2 px-3 text-left text-gray-500">Month</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { name: "Jane Doe", week: 42, month: 172 },
+                      { name: "Alex Lee", week: 39, month: 165 },
+                      { name: "John Smith", week: 36, month: 159 },
+                      { name: "Taylor Morgan", week: 27, month: 143 },
+                      { name: "Chris Evans", week: 20, month: 128 },
+                    ].map((row, i) => (
+                      <tr key={row.name} className={i % 2 === 0 ? "bg-white" : "bg-gray-100"}>
+                        <td className="py-2 px-3">{row.name}</td>
+                        <td className="py-2 px-3">{row.week}</td>
+                        <td className="py-2 px-3">{row.month}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-              <div className="bg-gray-50 rounded-lg p-4 h-[300px] flex items-center justify-center">
-                Project Time Distribution Chart
+              {/* Project Time Distribution Table */}
+              <div className="bg-gray-50 rounded-lg p-4 h-[300px] overflow-auto">
+                <div className="font-semibold text-gray-700 mb-2">Project Time Distribution</div>
+                <table className="min-w-full text-sm rounded-lg overflow-hidden">
+                  <thead>
+                    <tr className="bg-white border-b border-gray-200">
+                      <th className="py-2 px-3 text-left text-gray-500">Project Name</th>
+                      <th className="py-2 px-3 text-left text-gray-500">Week</th>
+                      <th className="py-2 px-3 text-left text-gray-500">Month</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { name: "Redesign Q3", week: 41, month: 160 },
+                      { name: "Project Alpha", week: 37, month: 149 },
+                      { name: "Mobile App", week: 31, month: 137 },
+                      { name: "New Onboarding", week: 24, month: 111 },
+                      { name: "Remote HR", week: 15, month: 97 },
+                    ].map((row, i) => (
+                      <tr key={row.name} className={i % 2 === 0 ? "bg-white" : "bg-gray-100"}>
+                        <td className="py-2 px-3">{row.name}</td>
+                        <td className="py-2 px-3">{row.week}</td>
+                        <td className="py-2 px-3">{row.month}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
