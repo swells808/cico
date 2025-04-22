@@ -26,6 +26,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { PasswordDialog } from "@/components/PasswordDialog";
+import { supabase } from "@/integrations/supabase/client";
 
 const Timeclock = () => {
   const navigate = useNavigate();
@@ -33,6 +35,9 @@ const Timeclock = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedEmployee, setSelectedEmployee] = useState("");
   const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
+  const [checkingPassword, setCheckingPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
 
   // Project data for the dropdown
   const projects = [
@@ -106,9 +111,37 @@ const Timeclock = () => {
     return t(key).replace('{count}', selectedProjects.length.toString());
   };
 
+  // Handle closing page with password dialog
   const handleClosePage = () => {
-    navigate('/dashboard');
+    setShowPasswordDialog(true);
+    setPasswordError(null);
   };
+
+  // Password check and close
+  async function handlePasswordSubmit(password: string) {
+    setCheckingPassword(true);
+    setPasswordError(null);
+    // Get current user
+    const { data, error } = await supabase.auth.getUser();
+    if (!data?.user) {
+      setCheckingPassword(false);
+      setPasswordError("No user session.");
+      return;
+    }
+    // Use Supabase reauthenticate endpoint
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: data.user.email ?? "",
+      password,
+    });
+    setCheckingPassword(false);
+
+    if (signInError) {
+      setPasswordError("Incorrect password. Please try again.");
+      return;
+    }
+    setShowPasswordDialog(false);
+    setTimeout(() => navigate('/dashboard'), 200);
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -278,8 +311,16 @@ const Timeclock = () => {
           </Card>
         </div>
       </footer>
+      <PasswordDialog
+        open={showPasswordDialog}
+        onSubmit={handlePasswordSubmit}
+        onCancel={() => setShowPasswordDialog(false)}
+        loading={checkingPassword}
+        error={passwordError}
+      />
     </div>
   );
 };
 
 export default Timeclock;
+
