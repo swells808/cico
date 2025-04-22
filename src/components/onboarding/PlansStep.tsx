@@ -8,28 +8,31 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Json } from '@/integrations/supabase/types';
+import { useToast } from '@/components/ui/use-toast';
+import { CompanyDetailsData } from '@/pages/Onboarding';
 
 interface PlansStepProps {
   onNext: () => void;
   onBack: () => void;
+  companyDetails?: CompanyDetailsData | null;
 }
 
-// Define the SubscriptionPlan interface to match the actual data structure from Supabase
 interface SubscriptionPlan {
   id: string;
   name: string;
   price: number;
-  features: string[];  // We expect this as string[] but need to convert it from Json
+  features: string[];
   stripe_price_id: string;
 }
 
-const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack }) => {
+const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack, companyDetails }) => {
   const [selectedPlan, setSelectedPlan] = useState('personal');
   const [promoCode, setPromoCode] = useState('');
   const [plans, setPlans] = useState<SubscriptionPlan[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Get plans from Supabase
   useEffect(() => {
     (async () => {
       setIsLoading(true);
@@ -37,12 +40,10 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack }) => {
         .from('subscription_plans')
         .select('id, name, price, features, stripe_price_id');
       if (!error && data) {
-        // Convert Json features to string[] before setting state
         const typedPlans = data.map(plan => ({
           ...plan,
-          // Ensure features is always a string array
-          features: Array.isArray(plan.features) 
-            ? plan.features.map(feature => String(feature)) 
+          features: Array.isArray(plan.features)
+            ? plan.features.map(feature => String(feature))
             : []
         }));
         setPlans(typedPlans);
@@ -62,10 +63,70 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack }) => {
     return `$${pro.price}/month`;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // When submitting, create the company in supabase
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Information will be saved here if needed in future (for now, just triggers next step)
-    onNext();
+
+    // Validate that companyDetails is present and required fields exist
+    if (!companyDetails) {
+      toast({
+        title: "Company information is missing",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    // Prepare data for insert
+    const {
+      companyName,
+      industry,
+      streetAddress,
+      city,
+      stateProvince,
+      postalCode,
+      country,
+      phone,
+      website,
+      departments,
+      // companyLogo: File | null, we need to upload & grab url first (future)
+    } = companyDetails;
+
+    try {
+      // Insert company to Supabase
+      const { error, data } = await supabase.from('companies').insert([
+        {
+          company_name: companyName,
+          industry: industry || null,
+          street_address: streetAddress,
+          city,
+          state_province: stateProvince,
+          postal_code: postalCode,
+          phone,
+          website: website || null,
+          departments: departments || null,
+          // company_logo_url: companyLogoUrl || null, // To support file upload in future
+        }
+      ]);
+      if (error) throw error;
+
+      toast({
+        title: "Company created successfully.",
+        description: "Your company profile was saved.",
+        variant: "default",
+      });
+
+      onNext();
+    } catch (err: any) {
+      toast({
+        title: "Error creating company",
+        description: err?.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -89,9 +150,7 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack }) => {
                   Perfect for individuals or small teams
                 </p>
                 <div className="mt-2">
-                  <span className="text-xl font-bold">
-                    {isLoading ? '...' : personal ? `$${personal.price}` : '--'}
-                  </span>
+                  <span className="text-xl font-bold">{isLoading ? '...' : personal ? `$${personal.price}` : '--'}</span>
                   <span className="text-gray-500"> / month</span>
                 </div>
                 <ul className="mt-3 space-y-1 text-sm">
@@ -126,7 +185,6 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack }) => {
                   <li>• Advanced reporting</li>
                   <li>• All premium features</li>
                 </ul>
-                {/* Number of users and total price removed as requested */}
               </div>
             </div>
           </CardContent>
@@ -143,11 +201,11 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack }) => {
         />
       </div>
       <div className="pt-4 flex justify-between">
-        <Button type="button" variant="outline" onClick={onBack}>
+        <Button type="button" variant="outline" onClick={onBack} disabled={isSubmitting}>
           Back
         </Button>
-        <Button type="submit" className="bg-[#008000] hover:bg-[#008000]/90">
-          Continue to Free Trial
+        <Button type="submit" className="bg-[#008000] hover:bg-[#008000]/90" disabled={isSubmitting}>
+          {isSubmitting ? 'Submitting...' : 'Continue to Free Trial'}
         </Button>
       </div>
     </form>
@@ -155,3 +213,4 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack }) => {
 };
 
 export default PlansStep;
+
