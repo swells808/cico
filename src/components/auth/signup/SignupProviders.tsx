@@ -7,7 +7,7 @@ interface SignupProvidersProps {
 }
 
 export const SignupProviders: React.FC<SignupProvidersProps> = ({ isLoading }) => (
-  <div className="flex flex-col sm:flex-row gap-4">
+  <div className="flex flex-col gap-4 w-full">
     <Button
       variant="outline"
       className="w-full border-[#5296ED] text-[#5296ED] flex items-center justify-center"
@@ -29,14 +29,14 @@ export const SignupProviders: React.FC<SignupProvidersProps> = ({ isLoading }) =
       type="button"
       disabled={isLoading}
     >
-      <svg className="w-5 h-5 mr-2" viewBox="0 0 23 23">
+      <svg className="w-5 h-5 mr-2 flex-shrink-0" viewBox="0 0 23 23">
         <path fill="#f3f3f3" d="M0 0h23v23H0z" />
         <path fill="#f35325" d="M1 1h10v10H1z" />
         <path fill="#81bc06" d="M12 1h10v10H12z" />
         <path fill="#05a6f0" d="M1 12h10v10H1z" />
         <path fill="#ffba08" d="M12 12h10v10H12z" />
       </svg>
-      Sign Up with Microsoft
+      <span className="truncate">Sign Up with Microsoft</span>
     </Button>
   </div>
 );

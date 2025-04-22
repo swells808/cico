@@ -91,7 +91,7 @@ export const SignupForm: React.FC = () => {
 
   return (
     <form
-      className="space-y-5"
+      className="space-y-5 max-w-full"
       onSubmit={handleSubmit}
       autoComplete="off"
       spellCheck={false}
