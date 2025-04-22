@@ -7,19 +7,19 @@ import { Card, CardContent } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { Json } from '@/integrations/supabase/types';
 
-// Important: fix SubscriptionPlan type according to database structure!
 interface PlansStepProps {
   onNext: () => void;
   onBack: () => void;
 }
 
-// features is string[] because the Supabase table for 'subscription_plans' defines features as jsonb, storing an array
+// Define the SubscriptionPlan interface to match the actual data structure from Supabase
 interface SubscriptionPlan {
   id: string;
   name: string;
   price: number;
-  features: string[]; // <-- fixed type
+  features: string[];  // We expect this as string[] but need to convert it from Json
   stripe_price_id: string;
 }
 
@@ -37,11 +37,15 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack }) => {
         .from('subscription_plans')
         .select('id, name, price, features, stripe_price_id');
       if (!error && data) {
-        // Enforce features as string[] in TS (could be empty array if not present)
-        setPlans(data.map(plan => ({
+        // Convert Json features to string[] before setting state
+        const typedPlans = data.map(plan => ({
           ...plan,
-          features: Array.isArray(plan.features) ? plan.features : [],
-        })));
+          // Ensure features is always a string array
+          features: Array.isArray(plan.features) 
+            ? plan.features.map(feature => String(feature)) 
+            : []
+        }));
+        setPlans(typedPlans);
       }
       setIsLoading(false);
     })();
