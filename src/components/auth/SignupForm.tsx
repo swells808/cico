@@ -73,9 +73,9 @@ export const SignupForm: React.FC = () => {
       if (error) throw error;
       toast({
         title: "Account created!",
-        description: "Please check your email to confirm your account.",
+        description: "Let's finish getting your account set up.",
       });
-      navigate("/login");
+      navigate("/onboarding"); // Redirect to onboarding instead of login
     } catch (error: any) {
       toast({
         title: "Signup failed",
