@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { UserHeader } from '@/components/users/UserHeader';
@@ -21,6 +22,7 @@ export interface UserFormData {
   employeeId: string;
   avatar?: string;
   role: string;
+  department?: string;  // Added department field
   permissions: string[];
   projects: Array<{
     id: string;
@@ -35,10 +37,6 @@ export interface UserFormData {
 }
 
 const EditUser = () => {
-  const { userId } = useParams();
-  const navigate = useNavigate();
-  const isNewUser = !userId;
-
   const [formData, setFormData] = useState<UserFormData>({
     firstName: '',
     lastName: '',
@@ -46,6 +44,7 @@ const EditUser = () => {
     phone: '',
     employeeId: '',
     role: 'Employee',
+    department: '',  // Initialize with empty string
     permissions: [],
     projects: [],
     status: 'Active',
@@ -134,6 +133,7 @@ const EditUser = () => {
           employeeId: user.id,
           avatar: user.avatar,
           role: user.role,
+          department: user.department || '',  // Added department mapping
           permissions: [],
           projects: user.projects || [],
           status: user.status,

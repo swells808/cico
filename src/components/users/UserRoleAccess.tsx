@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 import type { UserFormData } from '@/pages/EditUser';
 
 interface UserRoleAccessProps {
@@ -31,6 +32,10 @@ export const UserRoleAccess: React.FC<UserRoleAccessProps> = ({ data, setData })
     }));
   };
 
+  const handleDepartmentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setData(prev => ({ ...prev, department: event.target.value }));
+  };
+
   return (
     <Card className="p-6">
       <h2 className="text-lg font-semibold mb-4">Role & Access</h2>
@@ -47,6 +52,16 @@ export const UserRoleAccess: React.FC<UserRoleAccessProps> = ({ data, setData })
               <SelectItem value="Employee">Employee</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+
+        <div>
+          <Label>Department</Label>
+          <Input 
+            type="text" 
+            placeholder="Enter department" 
+            value={data.department || ''} 
+            onChange={handleDepartmentChange} 
+          />
         </div>
 
         <div className="space-y-2">
@@ -72,3 +87,4 @@ export const UserRoleAccess: React.FC<UserRoleAccessProps> = ({ data, setData })
     </Card>
   );
 };
+
