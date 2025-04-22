@@ -77,8 +77,8 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack, companyDetails })
       return;
     }
 
+    console.log("Starting company creation with details:", companyDetails);
     setIsSubmitting(true);
-    console.log("Submitting company details to Supabase:", companyDetails);
 
     // Prepare data for insert
     const {
@@ -95,6 +95,8 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack, companyDetails })
     } = companyDetails;
 
     try {
+      console.log("Starting Supabase company insertion");
+      
       // Explicitly format the data for insertion according to Supabase schema
       const companyData = {
         company_name: companyName,
@@ -111,11 +113,21 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack, companyDetails })
       
       console.log("Formatted data for insertion:", companyData);
       
+      // Test the Supabase connection first
+      const connectionTest = await supabase.from('companies').select().limit(1);
+      console.log("Supabase connection test:", connectionTest);
+      
+      if (connectionTest.error) {
+        throw new Error(`Supabase connection error: ${connectionTest.error.message}`);
+      }
+      
       // Use .select() to return the inserted data for confirmation
       const { error, data } = await supabase
         .from('companies')
         .insert(companyData)
         .select();
+      
+      console.log("Supabase insert response:", { error, data });
       
       if (error) {
         console.error("Supabase insertion error:", error);
@@ -133,6 +145,13 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack, companyDetails })
       onNext();
     } catch (err: any) {
       console.error("Error creating company:", err);
+      
+      // More detailed error logging
+      if (err.message) console.error("Error message:", err.message);
+      if (err.details) console.error("Error details:", err.details);
+      if (err.hint) console.error("Error hint:", err.hint);
+      if (err.code) console.error("Error code:", err.code);
+      
       toast({
         title: "Error creating company",
         description: err?.message || "Unknown error occurred",
@@ -218,7 +237,11 @@ const PlansStep: React.FC<PlansStepProps> = ({ onNext, onBack, companyDetails })
         <Button type="button" variant="outline" onClick={onBack} disabled={isSubmitting}>
           Back
         </Button>
-        <Button type="submit" className="bg-[#008000] hover:bg-[#008000]/90" disabled={isSubmitting}>
+        <Button 
+          type="submit" 
+          className="bg-[#008000] hover:bg-[#008000]/90" 
+          disabled={isSubmitting}
+        >
           {isSubmitting ? 'Submitting...' : 'Continue to Free Trial'}
         </Button>
       </div>

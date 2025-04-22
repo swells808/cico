@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Logo } from '@/components/ui/Logo';
 import ProgressBar from '@/components/onboarding/ProgressBar';
 import CompanyDetailsStep from '@/components/onboarding/CompanyDetailsStep';
@@ -34,15 +34,24 @@ const Onboarding: React.FC = () => {
   const [workHours, setWorkHours] = useState<any>(null);
   const [features, setFeatures] = useState<any>(null);
   
-  console.log("Current step:", step);
-  console.log("Company details in state:", companyDetails);
+  useEffect(() => {
+    console.log("Current step:", step);
+    console.log("Company details in state:", companyDetails);
+  }, [step, companyDetails]);
 
   const nextStep = () => setStep(prev => Math.min(prev + 1, totalSteps - 1));
   const prevStep = () => setStep(prev => Math.max(prev - 1, 0));
 
   const handleCompanyDetailsComplete = (fields: CompanyDetailsData) => {
     console.log("Company details completed:", fields);
-    setCompanyDetails(fields);
+    
+    // Ensure departments is always an array
+    const updatedFields = {
+      ...fields,
+      departments: fields.departments && Array.isArray(fields.departments) ? fields.departments : []
+    };
+    
+    setCompanyDetails(updatedFields);
     nextStep();
   };
 
@@ -62,7 +71,6 @@ const Onboarding: React.FC = () => {
             onNext={nextStep}
             onBack={prevStep}
             departments={companyDetails?.departments || []}
-            // Add team member data collection in future
           />
         );
       case 2:
