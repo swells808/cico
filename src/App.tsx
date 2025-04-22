@@ -24,6 +24,7 @@ function App() {
     <LanguageProvider>
       <Router>
         <Routes>
+          <Route path="/signup" element={<Signup />} />
           <Route path="/timeclock" element={<Timeclock />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/reports" element={<Reports />} />
@@ -44,7 +45,6 @@ function App() {
                   <Route path="/about" element={<About />} />
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/login" element={<Login />} />
-                  <Route path="/signup" element={<Signup />} />
                 </Routes>
               </main>
               <Footer />
