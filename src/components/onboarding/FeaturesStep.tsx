@@ -13,7 +13,7 @@ interface FeaturesStepProps {
 const FeaturesStep: React.FC<FeaturesStepProps> = ({ onNext, onBack }) => {
   const [photoCapture, setPhotoCapture] = useState(true);
   const [geolocation, setGeolocation] = useState(true);
-  const [timeclockMode, setTimeclockMode] = useState('standard');
+  const [employeePin, setEmployeePin] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,27 +61,21 @@ const FeaturesStep: React.FC<FeaturesStepProps> = ({ onNext, onBack }) => {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4">
             <div className="flex justify-between items-center">
               <div>
-                <Label className="text-base font-medium">Timeclock Mode</Label>
+                <Label htmlFor="employeePin" className="text-base font-medium">Employee Pin</Label>
                 <p className="text-sm text-gray-500 mt-1">
-                  Choose how employees will interact with the timeclock
+                  Require employees to enter a pin code when using the time clock (Default is their phone number).
                 </p>
               </div>
-              <div className="space-x-3 flex items-center">
-                <select
-                  value={timeclockMode}
-                  onChange={(e) => setTimeclockMode(e.target.value)}
-                  className="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="standard">Standard</option>
-                  <option value="kiosk">Kiosk</option>
-                  <option value="mobile">Mobile Only</option>
-                </select>
-              </div>
+              <Switch
+                id="employeePin"
+                checked={employeePin}
+                onCheckedChange={setEmployeePin}
+              />
             </div>
           </CardContent>
         </Card>
@@ -100,3 +94,4 @@ const FeaturesStep: React.FC<FeaturesStepProps> = ({ onNext, onBack }) => {
 };
 
 export default FeaturesStep;
+
