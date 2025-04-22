@@ -7,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { Json } from '@/integrations/supabase/types';
 
 interface PlansStepProps {
   onNext: () => void;
@@ -17,7 +18,7 @@ interface SubscriptionPlan {
   id: string;
   name: string;
   price: number;
-  features: string[] | null;
+  features: Json | null;
   stripe_price_id: string;
 }
 

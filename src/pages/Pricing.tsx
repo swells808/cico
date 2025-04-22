@@ -5,12 +5,13 @@ import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/custom-button";
 import { Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { Json } from "@/integrations/supabase/types";
 
 interface SubscriptionPlan {
   id: string;
   name: string;
   price: number;
-  features: string[] | null;
+  features: Json | null;
   stripe_price_id: string;
 }
 
