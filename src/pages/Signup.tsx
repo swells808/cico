@@ -1,3 +1,4 @@
+
 import React from "react";
 import { SignupForm } from "@/components/auth/SignupForm";
 import { Logo } from "@/components/ui/Logo";
@@ -16,7 +17,7 @@ const PromoSection = () => (
 const Signup = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#E6F2FF] via-[#D3E5F7] to-[#5296ED]/20 flex flex-col">
-      {/* Header */}
+      {/* Header -> not used, just logo on this page */}
       <header className="flex flex-col items-center justify-between py-5 px-4 bg-transparent">
         <div className="w-full flex flex-col items-center">
           <Logo className="h-12 mx-auto" />
@@ -44,7 +45,7 @@ const Signup = () => {
       {/* Minimal Footer */}
       <footer className="bg-transparent pb-7 mt-auto">
         <div className="text-center text-xs text-[#8E9196] mb-2">
-          &copy; {new Date().getFullYear()} Your Company. All rights reserved.
+          &copy; {new Date().getFullYear()} Cico Timeclock. All rights reserved.
         </div>
         <div className="flex gap-4 justify-center text-xs text-[#8E9196]">
           <Link to="/privacy" className="hover:underline">
