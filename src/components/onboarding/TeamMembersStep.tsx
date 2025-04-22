@@ -6,10 +6,19 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Plus, X } from 'lucide-react';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+} from '@/components/ui/select';
 
 interface TeamMembersStepProps {
   onNext: () => void;
   onBack: () => void;
+  departments?: string[];
 }
 
 type TeamMember = {
@@ -22,7 +31,7 @@ type TeamMember = {
   role: 'Admin' | 'Manager' | 'Employee';
 };
 
-const TeamMembersStep: React.FC<TeamMembersStepProps> = ({ onNext, onBack }) => {
+const TeamMembersStep: React.FC<TeamMembersStepProps> = ({ onNext, onBack, departments = [] }) => {
   const [members, setMembers] = useState<TeamMember[]>([{
     firstName: '',
     lastName: '',
@@ -147,12 +156,28 @@ const TeamMembersStep: React.FC<TeamMembersStepProps> = ({ onNext, onBack }) => 
 
               <div className="mt-3">
                 <Label htmlFor={`department-${index}`}>Department</Label>
-                <Input
-                  id={`department-${index}`}
+                {/* Change to dropdown */}
+                <Select
                   value={member.department}
-                  onChange={(e) => handleMemberChange(index, 'department', e.target.value)}
-                  placeholder="Department"
-                />
+                  onValueChange={(value) => handleMemberChange(index, 'department', value)}
+                  required
+                >
+                  <SelectTrigger id={`department-${index}`}>
+                    <SelectValue placeholder="Select department" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {(departments.length > 0
+                        ? departments
+                        : ['Other']
+                      ).map((dept, i) => (
+                        <SelectItem key={dept + i} value={dept}>
+                          {dept}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="mt-4">
@@ -203,3 +228,5 @@ const TeamMembersStep: React.FC<TeamMembersStepProps> = ({ onNext, onBack }) => 
 };
 
 export default TeamMembersStep;
+
+// NOTE: This file is getting quite long (over 200 lines). Please consider refactoring it into smaller components for better maintainability.

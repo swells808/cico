@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -46,9 +45,10 @@ const countryOptions = [
 
 interface CompanyDetailsStepProps {
   onNext: () => void;
+  onComplete?: (departments: string[]) => void; // NEW: to send up departments
 }
 
-const CompanyDetailsStep: React.FC<CompanyDetailsStepProps> = ({ onNext }) => {
+const CompanyDetailsStep: React.FC<CompanyDetailsStepProps> = ({ onNext, onComplete }) => {
   const [companyName, setCompanyName] = useState('');
   const [industry, setIndustry] = useState('');
   const [streetAddress, setStreetAddress] = useState('');
@@ -78,8 +78,13 @@ const CompanyDetailsStep: React.FC<CompanyDetailsStepProps> = ({ onNext }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would save the data before proceeding
-    onNext();
+    // Pass only non-empty, trimmed values for departments
+    const nonEmptyDepartments = departments.map(d => d.trim()).filter(Boolean);
+    if (onComplete) {
+      onComplete(nonEmptyDepartments);
+    } else {
+      onNext();
+    }
   };
 
   return (
@@ -283,4 +288,3 @@ const CompanyDetailsStep: React.FC<CompanyDetailsStepProps> = ({ onNext }) => {
 };
 
 export default CompanyDetailsStep;
-

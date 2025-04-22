@@ -14,15 +14,24 @@ const Onboarding: React.FC = () => {
 
   const totalSteps = 6; // Total number of steps including completion
 
+  // New: store departments in state
+  const [companyDepartments, setCompanyDepartments] = useState<string[]>([]);
+
   const nextStep = () => setStep(prev => Math.min(prev + 1, totalSteps - 1));
   const prevStep = () => setStep(prev => Math.max(prev - 1, 0));
+
+  // Handler to receive company details data
+  const handleCompanyDetailsComplete = (departments: string[]) => {
+    setCompanyDepartments(departments.filter(Boolean)); // Remove blanks
+    nextStep();
+  };
 
   function renderStep() {
     switch (step) {
       case 0:
-        return <CompanyDetailsStep onNext={nextStep} />;
+        return <CompanyDetailsStep onNext={nextStep} onComplete={handleCompanyDetailsComplete} />;
       case 1:
-        return <TeamMembersStep onNext={nextStep} onBack={prevStep} />;
+        return <TeamMembersStep onNext={nextStep} onBack={prevStep} departments={companyDepartments} />;
       case 2:
         return <WorkHoursStep onNext={nextStep} onBack={prevStep} />;
       case 3:
@@ -32,7 +41,7 @@ const Onboarding: React.FC = () => {
       case 5:
         return <CompletionStep onBack={prevStep} />;
       default:
-        return <CompanyDetailsStep onNext={nextStep} />;
+        return <CompanyDetailsStep onNext={nextStep} onComplete={handleCompanyDetailsComplete} />;
     }
   }
 
