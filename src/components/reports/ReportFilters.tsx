@@ -47,11 +47,11 @@ export const ReportFilters = () => {
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Team/Department
+          Options
         </label>
         <Select defaultValue="all">
           <SelectTrigger>
-            <SelectValue placeholder="Select team" />
+            <SelectValue placeholder="Select options" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Teams</SelectItem>
