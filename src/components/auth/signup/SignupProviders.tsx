@@ -17,10 +17,17 @@ export const SignupProviders: React.FC<SignupProvidersProps> = ({ isLoading }) =
     try {
       console.log(`Starting ${provider} signup process`);
       
+      const redirectTo = `${window.location.origin}/onboarding`;
+      console.log('Redirect URL:', redirectTo);
+      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: provider,
         options: {
-          redirectTo: `${window.location.origin}/onboarding`,
+          redirectTo: redirectTo,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
         },
       });
       
