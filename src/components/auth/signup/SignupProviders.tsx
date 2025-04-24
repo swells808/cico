@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,43 +13,30 @@ export const SignupProviders: React.FC<SignupProvidersProps> = ({ isLoading }) =
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleGoogleSignup = async () => {
+  const handleProviderSignup = async (provider: 'google' | 'azure') => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+      console.log(`Starting ${provider} signup process`);
+      
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: provider,
         options: {
           redirectTo: `${window.location.origin}/onboarding`,
         },
       });
       
-      if (error) throw error;
-      
-    } catch (error: any) {
-      console.error('Error signing up with Google:', error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to sign up with Google",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleMicrosoftSignup = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'azure',
-        options: {
-          redirectTo: `${window.location.origin}/onboarding`,
-        },
-      });
+      console.log(`${provider} auth response:`, { data, error });
       
       if (error) throw error;
       
+      // No additional code needed here as redirectTo will handle navigation
+      // after successful authentication
+      
     } catch (error: any) {
-      console.error('Error signing up with Microsoft:', error);
+      console.error(`Error signing up with ${provider}:`, error);
+      
       toast({
         title: "Error",
-        description: error.message || "Failed to sign up with Microsoft",
+        description: error.message || `Failed to sign up with ${provider}`,
         variant: "destructive",
       });
     }
@@ -61,7 +49,7 @@ export const SignupProviders: React.FC<SignupProvidersProps> = ({ isLoading }) =
         className="w-full border-[#5296ED] text-[#5296ED] flex items-center justify-center"
         type="button"
         disabled={isLoading}
-        onClick={handleGoogleSignup}
+        onClick={() => handleProviderSignup('google')}
       >
         <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
           <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -77,7 +65,7 @@ export const SignupProviders: React.FC<SignupProvidersProps> = ({ isLoading }) =
         className="w-full border-[#5296ED] text-[#5296ED] flex items-center justify-center"
         type="button"
         disabled={isLoading}
-        onClick={handleMicrosoftSignup}
+        onClick={() => handleProviderSignup('azure')}
       >
         <svg className="w-5 h-5 mr-2 flex-shrink-0" viewBox="0 0 23 23">
           <path fill="#f3f3f3" d="M0 0h23v23H0z" />

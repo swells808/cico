@@ -8,12 +8,9 @@ import { NameFields } from "./signup/NameFields";
 import { EmailField } from "./signup/EmailField";
 import { CompanyField } from "./signup/CompanyField";
 import { PasswordFields } from "./signup/PasswordFields";
-// Removed import for RoleSelector
 import { TermsCheckbox } from "./signup/TermsCheckbox";
 import { SignupProviders } from "./signup/SignupProviders";
 import { SignupLoginLink } from "./signup/SignupLoginLink";
-
-// Removed ROLES array
 
 export const SignupForm: React.FC = () => {
   const [form, setForm] = useState({
@@ -23,7 +20,6 @@ export const SignupForm: React.FC = () => {
     company: "",
     password: "",
     confirmPassword: "",
-    // role: "Admin", // Role state REMOVED
     agreed: false,
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -34,14 +30,14 @@ export const SignupForm: React.FC = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // Removed handleRoleChange
-
   const handleCheckbox = (checked: boolean) => {
     setForm((f) => ({ ...f, agreed: checked }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Form validation
     if (!form.agreed) {
       toast({
         title: "You must agree to the Terms of Service and Privacy Policy.",
@@ -49,6 +45,7 @@ export const SignupForm: React.FC = () => {
       });
       return;
     }
+    
     if (form.password !== form.confirmPassword) {
       toast({
         title: "Passwords do not match.",
@@ -56,9 +53,19 @@ export const SignupForm: React.FC = () => {
       });
       return;
     }
+    
+    console.log("Starting signup process with form data:", { 
+      email: form.email, 
+      firstName: form.firstName, 
+      lastName: form.lastName,
+      company: form.company
+    });
+    
     setIsLoading(true);
+    
     try {
-      const { error } = await supabase.auth.signUp({
+      // Sign up the user using Supabase auth
+      const { data, error } = await supabase.auth.signUp({
         email: form.email,
         password: form.password,
         options: {
@@ -70,13 +77,30 @@ export const SignupForm: React.FC = () => {
           },
         },
       });
+      
+      console.log("Supabase signup response:", { data, error });
+      
       if (error) throw error;
-      toast({
-        title: "Account created!",
-        description: "Let's finish getting your account set up.",
-      });
-      navigate("/onboarding"); // Redirect to onboarding instead of login
+      
+      if (data && data.user) {
+        console.log("User created successfully:", data.user.id);
+        
+        toast({
+          title: "Account created!",
+          description: "Let's finish getting your account set up.",
+        });
+        
+        // Wait a moment before redirecting to ensure toast is visible
+        setTimeout(() => {
+          console.log("Redirecting to /onboarding");
+          navigate("/onboarding");
+        }, 1000);
+      } else {
+        throw new Error("User account could not be created");
+      }
     } catch (error: any) {
+      console.error("Signup error:", error);
+      
       toast({
         title: "Signup failed",
         description: error?.message || "Error signing up.",
@@ -108,7 +132,6 @@ export const SignupForm: React.FC = () => {
         isLoading={isLoading}
         onChange={handleChange}
       />
-      {/* Removed RoleSelector section */}
       <TermsCheckbox agreed={form.agreed} onCheckedChange={handleCheckbox} />
       <Button
         type="submit"
