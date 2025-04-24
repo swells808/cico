@@ -17,8 +17,15 @@ export const SignupProviders: React.FC<SignupProvidersProps> = ({ isLoading }) =
     try {
       console.log(`Starting ${provider} signup process`);
       
-      const redirectTo = `${window.location.origin}/onboarding`;
+      // Create a clean and absolute redirect URL
+      const redirectTo = new URL('/onboarding', window.location.origin).toString();
       console.log('Redirect URL:', redirectTo);
+      
+      // Add additional debugging information
+      toast({
+        title: "Connecting to provider",
+        description: `Initiating ${provider} authentication...`,
+      });
       
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: provider,
@@ -33,17 +40,35 @@ export const SignupProviders: React.FC<SignupProvidersProps> = ({ isLoading }) =
       
       console.log(`${provider} auth response:`, { data, error });
       
-      if (error) throw error;
+      if (error) {
+        console.error(`Error details:`, error);
+        throw error;
+      }
+
+      if (!data?.url) {
+        console.error('No authentication URL returned');
+        throw new Error(`Failed to get authentication URL from ${provider}`);
+      }
       
-      // No additional code needed here as redirectTo will handle navigation
-      // after successful authentication
+      console.log('Authentication URL:', data.url);
+      toast({
+        title: "Redirecting",
+        description: `Redirecting to ${provider} for authentication...`,
+      });
+      
+      // Redirect using window.location for more reliable redirect
+      window.location.href = data.url;
       
     } catch (error: any) {
       console.error(`Error signing up with ${provider}:`, error);
       
+      // Provide more detailed error message to user
+      const errorMessage = error.message || `Failed to sign up with ${provider}`;
+      console.log('Error message:', errorMessage);
+      
       toast({
-        title: "Error",
-        description: error.message || `Failed to sign up with ${provider}`,
+        title: "Authentication Error",
+        description: errorMessage,
         variant: "destructive",
       });
     }
