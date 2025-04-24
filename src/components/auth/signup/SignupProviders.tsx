@@ -27,6 +27,10 @@ export const SignupProviders: React.FC<SignupProvidersProps> = ({ isLoading }) =
         description: `Initiating ${provider} authentication...`,
       });
       
+      // Before making the request, let's log important information
+      console.log('Current origin:', window.location.origin);
+      console.log('User agent:', navigator.userAgent);
+      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: provider,
         options: {
@@ -56,14 +60,34 @@ export const SignupProviders: React.FC<SignupProvidersProps> = ({ isLoading }) =
         description: `Redirecting to ${provider} for authentication...`,
       });
       
-      // Redirect using window.location for more reliable redirect
-      window.location.href = data.url;
+      // Show a message with the URL in case redirect doesn't work
+      console.log('If automatic redirect fails, visit this URL:', data.url);
+      
+      // Wrap the redirect in a short timeout to ensure toast is visible
+      setTimeout(() => {
+        try {
+          window.location.href = data.url;
+        } catch (redirectError) {
+          console.error('Redirect error:', redirectError);
+          toast({
+            title: "Redirect Error",
+            description: "Failed to redirect. Check console for details.",
+            variant: "destructive",
+          });
+        }
+      }, 500);
       
     } catch (error: any) {
       console.error(`Error signing up with ${provider}:`, error);
       
       // Provide more detailed error message to user
-      const errorMessage = error.message || `Failed to sign up with ${provider}`;
+      let errorMessage = error.message || `Failed to sign up with ${provider}`;
+      
+      // Add connection diagnostic information
+      if (errorMessage.includes('refused to connect')) {
+        errorMessage += '. This may be due to a network issue or incorrect OAuth configuration.';
+      }
+      
       console.log('Error message:', errorMessage);
       
       toast({
@@ -71,6 +95,15 @@ export const SignupProviders: React.FC<SignupProvidersProps> = ({ isLoading }) =
         description: errorMessage,
         variant: "destructive",
       });
+      
+      // Additional diagnostic information for common errors
+      if (navigator.onLine === false) {
+        toast({
+          title: "Network Issue",
+          description: "You appear to be offline. Please check your internet connection.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
