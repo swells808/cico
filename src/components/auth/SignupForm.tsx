@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -37,7 +36,6 @@ export const SignupForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Form validation
     if (!form.agreed) {
       toast({
         title: "You must agree to the Terms of Service and Privacy Policy.",
@@ -54,17 +52,9 @@ export const SignupForm: React.FC = () => {
       return;
     }
     
-    console.log("Starting signup process with form data:", { 
-      email: form.email, 
-      firstName: form.firstName, 
-      lastName: form.lastName,
-      company: form.company
-    });
-    
     setIsLoading(true);
     
     try {
-      // Sign up the user using Supabase auth
       const { data, error } = await supabase.auth.signUp({
         email: form.email,
         password: form.password,
@@ -72,13 +62,10 @@ export const SignupForm: React.FC = () => {
           data: {
             first_name: form.firstName,
             last_name: form.lastName,
-            company: form.company,
-            role: "Admin", // Always assign Admin role on sign up
+            company: form.company, // Include company name in metadata
           },
         },
       });
-      
-      console.log("Supabase signup response:", { data, error });
       
       if (error) throw error;
       
@@ -87,12 +74,11 @@ export const SignupForm: React.FC = () => {
         
         toast({
           title: "Account created!",
-          description: "Let's finish getting your account set up.",
+          description: "Let's finish setting up your account.",
         });
         
-        // Wait a moment before redirecting to ensure toast is visible
+        // Redirect to onboarding after a short delay to ensure toast is visible
         setTimeout(() => {
-          console.log("Redirecting to /onboarding");
           navigate("/onboarding");
         }, 1000);
       } else {

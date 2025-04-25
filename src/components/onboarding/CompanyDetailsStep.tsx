@@ -15,6 +15,8 @@ import {
   SelectLabel,
 } from '@/components/ui/select';
 import { CompanyDetailsData } from '@/pages/Onboarding';
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 // US States, Canadian Provinces, Mexican States
 const US_STATES = [
@@ -75,6 +77,7 @@ const CompanyDetailsStep: React.FC<CompanyDetailsStepProps> = ({ onNext, onCompl
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const logoInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   const handleAddDepartment = () => {
     setDepartments([...departments, '']);
@@ -92,7 +95,7 @@ const CompanyDetailsStep: React.FC<CompanyDetailsStepProps> = ({ onNext, onCompl
     setDepartments(newDepartments);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const nonEmptyDepartments = departments.map(d => d.trim()).filter(Boolean);
     let newErrors: { [key: string]: string } = {};
@@ -110,24 +113,87 @@ const CompanyDetailsStep: React.FC<CompanyDetailsStepProps> = ({ onNext, onCompl
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
 
-    // Prepare all company details to pass up
-    const companyData: CompanyDetailsData = {
-      companyName: companyName.trim(),
-      industry: industry.trim() || undefined,
-      streetAddress: streetAddress.trim(),
-      city: city.trim(),
-      stateProvince,
-      postalCode: postalCode.trim(),
-      country,
-      phone: phone.trim(),
-      website: website.trim() || undefined,
-      departments: nonEmptyDepartments.length > 0 ? nonEmptyDepartments : undefined,
-    };
+    try {
+      // Get current user's company ID
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("No authenticated user found");
 
-    console.log("Company form submitted with data:", companyData);
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('company_id')
+        .eq('id', user.id)
+        .single();
 
-    if (onComplete) onComplete(companyData);
-    else onNext();
+      if (profileError) throw profileError;
+      if (!profileData?.company_id) throw new Error("No company found for user");
+
+      // Update company details
+      const { error: updateError } = await supabase
+        .from('companies')
+        .update({
+          company_name: companyName.trim(),
+          industry: industry.trim() || null,
+          street_address: streetAddress.trim(),
+          city: city.trim(),
+          state_province: stateProvince,
+          phone: phone.trim(),
+          website: website.trim() || null,
+          departments: nonEmptyDepartments.length > 0 ? nonEmptyDepartments : null,
+        })
+        .eq('id', profileData.company_id);
+
+      if (updateError) throw updateError;
+
+      // Process company logo if provided
+      if (companyLogo) {
+        const fileExt = companyLogo.name.split('.').pop();
+        const filePath = `company-logos/${profileData.company_id}.${fileExt}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('company-assets')
+          .upload(filePath, companyLogo, { upsert: true });
+
+        if (uploadError) {
+          console.error("Logo upload error:", uploadError);
+          // Don't throw, continue without logo
+        } else {
+          // Update company with logo URL
+          const { data: urlData } = supabase.storage
+            .from('company-assets')
+            .getPublicUrl(filePath);
+
+          await supabase
+            .from('companies')
+            .update({ company_logo_url: urlData.publicUrl })
+            .eq('id', profileData.company_id);
+        }
+      }
+
+      // Call onComplete with the company data if provided
+      if (onComplete) {
+        onComplete({
+          companyName: companyName.trim(),
+          industry: industry.trim() || undefined,
+          streetAddress: streetAddress.trim(),
+          city: city.trim(),
+          stateProvince,
+          postalCode: postalCode.trim(),
+          country,
+          phone: phone.trim(),
+          website: website.trim() || undefined,
+          departments: nonEmptyDepartments.length > 0 ? nonEmptyDepartments : undefined,
+        });
+      } else {
+        onNext();
+      }
+    } catch (error: any) {
+      console.error("Error saving company details:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to save company details",
+        variant: "destructive",
+      });
+    }
   };
 
   return (

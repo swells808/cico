@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 interface FeaturesStepProps {
   onNext: () => void;
@@ -14,11 +16,50 @@ const FeaturesStep: React.FC<FeaturesStepProps> = ({ onNext, onBack }) => {
   const [photoCapture, setPhotoCapture] = useState(true);
   const [geolocation, setGeolocation] = useState(true);
   const [employeePin, setEmployeePin] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would save the data before proceeding
-    onNext();
+    setIsSubmitting(true);
+
+    try {
+      // Get current user's company ID
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("No authenticated user found");
+
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('company_id')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError) throw profileError;
+      if (!profileData?.company_id) throw new Error("No company found for user");
+
+      // Save features
+      const { error: featuresError } = await supabase
+        .from('company_features')
+        .insert({
+          company_id: profileData.company_id,
+          photo_capture: photoCapture,
+          geolocation: geolocation,
+          employee_pin: employeePin
+        });
+
+      if (featuresError) throw featuresError;
+
+      onNext();
+    } catch (error: any) {
+      console.error("Error saving features:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to save features",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -94,4 +135,3 @@ const FeaturesStep: React.FC<FeaturesStepProps> = ({ onNext, onBack }) => {
 };
 
 export default FeaturesStep;
-
