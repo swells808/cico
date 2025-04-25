@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -22,6 +23,7 @@ export const SignupForm: React.FC = () => {
     agreed: false,
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -53,8 +55,10 @@ export const SignupForm: React.FC = () => {
     }
     
     setIsLoading(true);
+    setFormSubmitted(false);
     
     try {
+      console.log("Starting signup process...");
       const { data, error } = await supabase.auth.signUp({
         email: form.email,
         password: form.password,
@@ -67,7 +71,27 @@ export const SignupForm: React.FC = () => {
         },
       });
       
-      if (error) throw error;
+      if (error) {
+        console.error("Signup error:", error);
+        
+        if (error.status === 429) {
+          toast({
+            title: "Too many attempts",
+            description: "Please wait a few minutes before trying again.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Signup failed",
+            description: error?.message || "Error signing up.",
+            variant: "destructive",
+          });
+        }
+        throw error;
+      }
+      
+      console.log("Signup successful:", data);
+      setFormSubmitted(true);
       
       if (data && data.user) {
         console.log("User created successfully:", data.user.id);
@@ -82,16 +106,14 @@ export const SignupForm: React.FC = () => {
           navigate("/onboarding");
         }, 1000);
       } else {
-        throw new Error("User account could not be created");
+        toast({
+          title: "Account created!",
+          description: "Please check your email to confirm your registration. Then, you'll be redirected to onboarding.",
+        });
       }
     } catch (error: any) {
       console.error("Signup error:", error);
-      
-      toast({
-        title: "Signup failed",
-        description: error?.message || "Error signing up.",
-        variant: "destructive",
-      });
+      // Additional error handling is in the previous try/catch
     } finally {
       setIsLoading(false);
     }
@@ -122,10 +144,17 @@ export const SignupForm: React.FC = () => {
       <Button
         type="submit"
         className="w-full text-base font-semibold bg-[#5296ED] hover:bg-[#5296ED]/90 rounded-lg py-3 mt-1"
-        disabled={isLoading}
+        disabled={isLoading || formSubmitted}
       >
-        {isLoading ? "Creating Account..." : "Create Account & Start Free Trial"}
+        {isLoading ? "Creating Account..." : formSubmitted ? "Account Created!" : "Create Account & Start Free Trial"}
       </Button>
+      
+      {formSubmitted && (
+        <div className="p-3 bg-green-100 border border-green-300 text-green-700 rounded-md text-center">
+          <p>Account created successfully! You will be redirected to onboarding shortly.</p>
+        </div>
+      )}
+      
       <SignupProviders isLoading={isLoading} />
       <SignupLoginLink />
     </form>
