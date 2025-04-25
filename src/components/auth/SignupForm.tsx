@@ -24,21 +24,28 @@ export const SignupForm: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setError(null); // Clear error when user makes changes
   };
 
   const handleCheckbox = (checked: boolean) => {
     setForm((f) => ({ ...f, agreed: checked }));
+    setError(null); // Clear error when user makes changes
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Clear previous state
+    setError(null);
+    
     if (!form.agreed) {
+      setError("You must agree to the Terms of Service and Privacy Policy.");
       toast({
         title: "You must agree to the Terms of Service and Privacy Policy.",
         variant: "destructive",
@@ -47,6 +54,7 @@ export const SignupForm: React.FC = () => {
     }
     
     if (form.password !== form.confirmPassword) {
+      setError("Passwords do not match.");
       toast({
         title: "Passwords do not match.",
         variant: "destructive",
@@ -58,7 +66,7 @@ export const SignupForm: React.FC = () => {
     setFormSubmitted(false);
     
     try {
-      console.log("Starting signup process...");
+      console.log("Starting signup process with email:", form.email);
       const { data, error } = await supabase.auth.signUp({
         email: form.email,
         password: form.password,
@@ -71,16 +79,27 @@ export const SignupForm: React.FC = () => {
         },
       });
       
+      console.log("Signup API response:", { data, error });
+      
       if (error) {
         console.error("Signup error:", error);
         
         if (error.status === 429) {
+          setError("Too many attempts. Please wait a few minutes before trying again.");
           toast({
             title: "Too many attempts",
             description: "Please wait a few minutes before trying again.",
             variant: "destructive",
           });
+        } else if (error.message === "User already registered") {
+          setError("This email is already registered. Please log in instead.");
+          toast({
+            title: "Email already in use",
+            description: "This email is already registered. Please log in instead.",
+            variant: "destructive",
+          });
         } else {
+          setError(error?.message || "Error signing up.");
           toast({
             title: "Signup failed",
             description: error?.message || "Error signing up.",
@@ -104,7 +123,7 @@ export const SignupForm: React.FC = () => {
         // Redirect to onboarding after a short delay to ensure toast is visible
         setTimeout(() => {
           navigate("/onboarding");
-        }, 1000);
+        }, 1500);
       } else {
         toast({
           title: "Account created!",
@@ -112,7 +131,7 @@ export const SignupForm: React.FC = () => {
         });
       }
     } catch (error: any) {
-      console.error("Signup error:", error);
+      console.error("Signup error caught in catch block:", error);
       // Additional error handling is in the previous try/catch
     } finally {
       setIsLoading(false);
@@ -141,6 +160,13 @@ export const SignupForm: React.FC = () => {
         onChange={handleChange}
       />
       <TermsCheckbox agreed={form.agreed} onCheckedChange={handleCheckbox} />
+      
+      {error && (
+        <div className="p-3 bg-red-50 border border-red-200 text-red-600 rounded-md text-center">
+          <p>{error}</p>
+        </div>
+      )}
+      
       <Button
         type="submit"
         className="w-full text-base font-semibold bg-[#5296ED] hover:bg-[#5296ED]/90 rounded-lg py-3 mt-1"
